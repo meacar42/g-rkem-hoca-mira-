@@ -1,13 +1,16 @@
-import {IProduct} from "@/types/IProduct";
-import Link from "next/link";
-import { ShoppingCart, Eye } from 'lucide-react';
+import { IProduct } from '@/types/IProduct'
+import Link from 'next/link'
+import { ShoppingCart, Eye } from 'lucide-react'
 
 interface ProductCardProps {
-    product: IProduct;
-    onAddToCart?: (product: IProduct) => void;
+    product: IProduct
+    onAddToCart?: (product: IProduct) => void
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({
+    product,
+    onAddToCart,
+}: ProductCardProps) {
     return (
         <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="relative overflow-hidden aspect-square bg-gray-50">
@@ -43,15 +46,21 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                 )}
             </div>
             <div className="p-4">
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{product.category}</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                    {product.category}
+                </p>
                 <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-emerald-500 transition-colors">
                     {product.name}
                 </h3>
                 <div className="flex items-center justify-between">
-                    <p className="text-xl font-bold text-emerald-500">${product.price}</p>
-                    <span className="text-xs text-gray-500">{product.frameShape}</span>
+                    <p className="text-xl font-bold text-emerald-500">
+                        ${product.price}
+                    </p>
+                    <span className="text-xs text-gray-500">
+                        {product.frameShape}
+                    </span>
                 </div>
             </div>
         </div>
-    );
+    )
 }

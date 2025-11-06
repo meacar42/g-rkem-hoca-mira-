@@ -1,22 +1,22 @@
-"use client";
-import {FormEvent, useState} from 'react';
+'use client'
+import { FormEvent, useState } from 'react'
 
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
-import Button from "@/components/button";
+import { Mail, Phone, MapPin, Clock } from 'lucide-react'
+import Button from '@/components/button'
 
 export default function Contact() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         subject: '',
-        message: ''
-    });
+        message: '',
+    })
 
     const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-    };
+        e.preventDefault()
+        alert('Thank you for your message! We will get back to you soon.')
+        setFormData({ name: '', email: '', subject: '', message: '' })
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -24,7 +24,8 @@ export default function Contact() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-5xl font-bold mb-6">Get in Touch</h1>
                     <p className="text-xl text-emerald-100 max-w-3xl mx-auto">
-                        Have questions? We're here to help. Contact us and we'll respond as soon as possible.
+                        Have questions? We're here to help. Contact us and we'll
+                        respond as soon as possible.
                     </p>
                 </div>
             </section>
@@ -33,9 +34,13 @@ export default function Contact() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         <div>
-                            <h2 className="text-3xl font-bold text-black mb-6">Contact Information</h2>
+                            <h2 className="text-3xl font-bold text-black mb-6">
+                                Contact Information
+                            </h2>
                             <p className="text-gray-700 mb-8">
-                                Feel free to reach out through any of these channels. Our customer service team is ready to assist you.
+                                Feel free to reach out through any of these
+                                channels. Our customer service team is ready to
+                                assist you.
                             </p>
 
                             <div className="space-y-6">
@@ -44,9 +49,15 @@ export default function Contact() {
                                         <Mail className="w-6 h-6 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg mb-1">Email</h3>
-                                        <p className="text-gray-600">info@miraoptik.com</p>
-                                        <p className="text-gray-600">support@miraoptik.com</p>
+                                        <h3 className="font-bold text-lg mb-1">
+                                            Email
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            info@miraoptik.com
+                                        </p>
+                                        <p className="text-gray-600">
+                                            support@miraoptik.com
+                                        </p>
                                     </div>
                                 </div>
 
@@ -55,9 +66,15 @@ export default function Contact() {
                                         <Phone className="w-6 h-6 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg mb-1">Phone</h3>
-                                        <p className="text-gray-600">+1 (555) 123-4567</p>
-                                        <p className="text-gray-600">Toll Free: 1-800-MIRA-OPT</p>
+                                        <h3 className="font-bold text-lg mb-1">
+                                            Phone
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            +1 (555) 123-4567
+                                        </p>
+                                        <p className="text-gray-600">
+                                            Toll Free: 1-800-MIRA-OPT
+                                        </p>
                                     </div>
                                 </div>
 
@@ -66,10 +83,18 @@ export default function Contact() {
                                         <MapPin className="w-6 h-6 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg mb-1">Address</h3>
-                                        <p className="text-gray-600">123 Vision Street</p>
-                                        <p className="text-gray-600">New York, NY 10001</p>
-                                        <p className="text-gray-600">United States</p>
+                                        <h3 className="font-bold text-lg mb-1">
+                                            Address
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            123 Vision Street
+                                        </p>
+                                        <p className="text-gray-600">
+                                            New York, NY 10001
+                                        </p>
+                                        <p className="text-gray-600">
+                                            United States
+                                        </p>
                                     </div>
                                 </div>
 
@@ -78,24 +103,37 @@ export default function Contact() {
                                         <Clock className="w-6 h-6 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg mb-1">Business Hours</h3>
-                                        <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                                        <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
-                                        <p className="text-gray-600">Sunday: Closed</p>
+                                        <h3 className="font-bold text-lg mb-1">
+                                            Business Hours
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            Monday - Friday: 9:00 AM - 6:00 PM
+                                        </p>
+                                        <p className="text-gray-600">
+                                            Saturday: 10:00 AM - 4:00 PM
+                                        </p>
+                                        <p className="text-gray-600">
+                                            Sunday: Closed
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="mt-8 bg-emerald-50 p-6 rounded-lg">
-                                <h3 className="font-bold text-lg mb-2 text-emerald-900">Quick Response</h3>
+                                <h3 className="font-bold text-lg mb-2 text-emerald-900">
+                                    Quick Response
+                                </h3>
                                 <p className="text-emerald-800">
-                                    We typically respond to all inquiries within 24 hours during business days.
+                                    We typically respond to all inquiries within
+                                    24 hours during business days.
                                 </p>
                             </div>
                         </div>
 
                         <div className="bg-white rounded-lg shadow-lg p-8">
-                            <h2 className="text-3xl font-bold text-black mb-6">Send us a Message</h2>
+                            <h2 className="text-3xl font-bold text-black mb-6">
+                                Send us a Message
+                            </h2>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-gray-700 font-medium mb-2">
@@ -105,7 +143,12 @@ export default function Contact() {
                                         type="text"
                                         required
                                         value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                name: e.target.value,
+                                            })
+                                        }
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                         placeholder="Your full name"
                                     />
@@ -119,7 +162,12 @@ export default function Contact() {
                                         type="email"
                                         required
                                         value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                email: e.target.value,
+                                            })
+                                        }
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                         placeholder="your.email@example.com"
                                     />
@@ -133,7 +181,12 @@ export default function Contact() {
                                         type="text"
                                         required
                                         value={formData.subject}
-                                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                subject: e.target.value,
+                                            })
+                                        }
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                         placeholder="What is this regarding?"
                                     />
@@ -146,14 +199,23 @@ export default function Contact() {
                                     <textarea
                                         required
                                         value={formData.message}
-                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                message: e.target.value,
+                                            })
+                                        }
                                         rows={6}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
                                         placeholder="Tell us how we can help..."
                                     />
                                 </div>
 
-                                <Button type="submit" size="lg" className="w-full">
+                                <Button
+                                    type="submit"
+                                    size="lg"
+                                    className="w-full"
+                                >
                                     Send Message
                                 </Button>
                             </form>
@@ -164,38 +226,54 @@ export default function Contact() {
 
             <section className="py-16 bg-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+                    <h2 className="text-3xl font-bold text-center mb-12">
+                        Frequently Asked Questions
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 className="font-bold text-lg mb-2">What is your return policy?</h3>
+                            <h3 className="font-bold text-lg mb-2">
+                                What is your return policy?
+                            </h3>
                             <p className="text-gray-600">
-                                We offer a 30-day return policy for all products. Items must be in original condition with all packaging.
+                                We offer a 30-day return policy for all
+                                products. Items must be in original condition
+                                with all packaging.
                             </p>
                         </div>
 
                         <div className="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 className="font-bold text-lg mb-2">Do you offer prescription lenses?</h3>
+                            <h3 className="font-bold text-lg mb-2">
+                                Do you offer prescription lenses?
+                            </h3>
                             <p className="text-gray-600">
-                                Yes! All our eyeglasses can be fitted with prescription lenses. Contact us for details.
+                                Yes! All our eyeglasses can be fitted with
+                                prescription lenses. Contact us for details.
                             </p>
                         </div>
 
                         <div className="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 className="font-bold text-lg mb-2">How long does shipping take?</h3>
+                            <h3 className="font-bold text-lg mb-2">
+                                How long does shipping take?
+                            </h3>
                             <p className="text-gray-600">
-                                Standard shipping takes 5-7 business days. Express shipping options are available at checkout.
+                                Standard shipping takes 5-7 business days.
+                                Express shipping options are available at
+                                checkout.
                             </p>
                         </div>
 
                         <div className="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 className="font-bold text-lg mb-2">Do you have a warranty?</h3>
+                            <h3 className="font-bold text-lg mb-2">
+                                Do you have a warranty?
+                            </h3>
                             <p className="text-gray-600">
-                                All our products come with a 2-year warranty against manufacturing defects.
+                                All our products come with a 2-year warranty
+                                against manufacturing defects.
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
-    );
+    )
 }

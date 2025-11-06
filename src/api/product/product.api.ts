@@ -1,4 +1,4 @@
-import {IProduct} from "@/types/IProduct";
+import { IProduct } from '@/types/IProduct'
 
 export async function getProductsAPI() {
     return [
@@ -20,10 +20,12 @@ export async function getProductsAPI() {
             featured: false,
             image: 'https://picsum.photos/200',
         },
-    ];
+    ]
 }
 
-export async function getProductDetailAPI(id: number): Promise<IProduct | undefined> {
-    const products = await getProductsAPI();
-    return products.find((product) => product.id === id);
+export async function getProductDetailAPI(
+    id: number,
+): Promise<IProduct | undefined> {
+    const products = await getProductsAPI()
+    return products.find((product) => product.id === id)
 }

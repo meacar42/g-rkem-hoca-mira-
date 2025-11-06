@@ -1,6 +1,13 @@
-
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, Glasses } from 'lucide-react';
-import Link from "next/link";
+import {
+    Facebook,
+    Instagram,
+    Twitter,
+    Mail,
+    Phone,
+    MapPin,
+    Glasses,
+} from 'lucide-react'
+import Link from 'next/link'
 
 export default function Footer() {
     return (
@@ -10,19 +17,32 @@ export default function Footer() {
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                             <Glasses className="w-8 h-8 text-emerald-500" />
-                            <span className="text-2xl font-bold">Mira <span className="text-emerald-500">Optik</span></span>
+                            <span className="text-2xl font-bold">
+                                Mira{' '}
+                                <span className="text-emerald-500">Optik</span>
+                            </span>
                         </div>
                         <p className="text-gray-400 text-sm mb-4">
-                            Quality eyewear for every style and vision need. Your trusted partner in eye care.
+                            Quality eyewear for every style and vision need.
+                            Your trusted partner in eye care.
                         </p>
                         <div className="flex gap-3">
-                            <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-emerald-500 transition-colors">
+                            <a
+                                href="#"
+                                className="bg-gray-800 p-2 rounded-full hover:bg-emerald-500 transition-colors"
+                            >
                                 <Facebook className="w-5 h-5" />
                             </a>
-                            <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-emerald-500 transition-colors">
+                            <a
+                                href="#"
+                                className="bg-gray-800 p-2 rounded-full hover:bg-emerald-500 transition-colors"
+                            >
                                 <Instagram className="w-5 h-5" />
                             </a>
-                            <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-emerald-500 transition-colors">
+                            <a
+                                href="#"
+                                className="bg-gray-800 p-2 rounded-full hover:bg-emerald-500 transition-colors"
+                            >
                                 <Twitter className="w-5 h-5" />
                             </a>
                         </div>
@@ -31,20 +51,78 @@ export default function Footer() {
                     <div>
                         <h3 className="font-bold text-lg mb-4">Quick Links</h3>
                         <ul className="space-y-2 text-gray-400 text-sm">
-                            <li><Link href="/sunglasses" className="hover:text-emerald-500 transition-colors">Shop Sunglasses</Link></li>
-                            <li><Link href="/eyeglasses" className="hover:text-emerald-500 transition-colors">Shop Eyeglasses</Link></li>
-                            <li><Link href="/about" className="hover:text-emerald-500 transition-colors">About Us</Link></li>
-                            <li><Link href="/contact" className="hover:text-emerald-500 transition-colors">Contact</Link></li>
+                            <li>
+                                <Link
+                                    href="/sunglasses"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    Shop Sunglasses
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/eyeglasses"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    Shop Eyeglasses
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/about"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    About Us
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/contact"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    Contact
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
                     <div>
-                        <h3 className="font-bold text-lg mb-4">Customer Service</h3>
+                        <h3 className="font-bold text-lg mb-4">
+                            Customer Service
+                        </h3>
                         <ul className="space-y-2 text-gray-400 text-sm">
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">FAQ</a></li>
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Shipping & Returns</a></li>
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Size Guide</a></li>
-                            <li><a href="#" className="hover:text-emerald-500 transition-colors">Privacy Policy</a></li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    FAQ
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    Shipping & Returns
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    Size Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="hover:text-emerald-500 transition-colors"
+                                >
+                                    Privacy Policy
+                                </a>
+                            </li>
                         </ul>
                     </div>
 
@@ -61,7 +139,11 @@ export default function Footer() {
                             </li>
                             <li className="flex items-start gap-2">
                                 <MapPin className="w-4 h-4 text-emerald-500 mt-1" />
-                                <span>123 Vision Street<br />New York, NY 10001</span>
+                                <span>
+                                    123 Vision Street
+                                    <br />
+                                    New York, NY 10001
+                                </span>
                             </li>
                         </ul>
                     </div>
@@ -80,5 +162,5 @@ export default function Footer() {
                 </div>
             </div>
         </footer>
-    );
+    )
 }

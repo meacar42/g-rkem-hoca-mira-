@@ -1,16 +1,23 @@
-"use client";
-import { useState, useEffect } from 'react';
-import { ShoppingCart, User as UserIcon, Menu, X, Glasses, LogOut } from 'lucide-react';
-import Link from "next/link";
+'use client'
+import { useState, useEffect } from 'react'
+import {
+    ShoppingCart,
+    User as UserIcon,
+    Menu,
+    X,
+    Glasses,
+    LogOut,
+} from 'lucide-react'
+import Link from 'next/link'
 
 interface HeaderProps {
-    cartItemCount: number;
+    cartItemCount: number
 }
 
 export default function Header({ cartItemCount }: HeaderProps) {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showAuthModal, setShowAuthModal] = useState(false);
-    const [user, setUser] = useState<any>(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [showAuthModal, setShowAuthModal] = useState(false)
+    const [user, setUser] = useState<any>(null)
     // const [user, setUser] = useState<User | null>(null);
 
     const navigation = [
@@ -18,8 +25,8 @@ export default function Header({ cartItemCount }: HeaderProps) {
         { name: 'Sunglasses', href: '/catalog' },
         { name: 'Eyeglasses', href: '/catalog' },
         { name: 'About', href: '/about' },
-        { name: 'Contact', href: '/contact' }
-    ];
+        { name: 'Contact', href: '/contact' },
+    ]
 
     useEffect(() => {
         // Başlangıçta user kontrolü
@@ -28,7 +35,6 @@ export default function Header({ cartItemCount }: HeaderProps) {
         //     setUser(currentUser);
         // };
         // checkUser();
-
         // Auth state değişikliklerini dinle
         // const unsubscribe = authService.onAuthStateChange((currentUser) => {
         //     setUser(currentUser);
@@ -37,7 +43,7 @@ export default function Header({ cartItemCount }: HeaderProps) {
         // return () => {
         //     unsubscribe();
         // };
-    }, []);
+    }, [])
 
     // const handleSignOut = async () => {
     //     try {
@@ -55,8 +61,8 @@ export default function Header({ cartItemCount }: HeaderProps) {
                     <Link href="/" className="flex items-center gap-2 group">
                         <Glasses className="w-8 h-8 text-emerald-500 group-hover:scale-110 transition-transform" />
                         <span className="text-2xl font-bold text-black">
-              Mira <span className="text-emerald-500">Optik</span>
-            </span>
+                            Mira <span className="text-emerald-500">Optik</span>
+                        </span>
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-8">
@@ -74,7 +80,9 @@ export default function Header({ cartItemCount }: HeaderProps) {
                     <div className="flex items-center gap-4">
                         {user ? (
                             <div className="hidden sm:flex items-center gap-2">
-                                <span className="text-sm text-gray-700">{user.email}</span>
+                                <span className="text-sm text-gray-700">
+                                    {user.email}
+                                </span>
                                 <button
                                     onClick={() => {}}
                                     className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -91,19 +99,26 @@ export default function Header({ cartItemCount }: HeaderProps) {
                                 <UserIcon className="w-5 h-5 text-gray-700" />
                             </button>
                         )}
-                        <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <Link
+                            href="/cart"
+                            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        >
                             <ShoppingCart className="w-5 h-5 text-gray-700" />
                             {cartItemCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItemCount}
-                </span>
+                                    {cartItemCount}
+                                </span>
                             )}
                         </Link>
                         <button
                             className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
-                            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            {mobileMenuOpen ? (
+                                <X className="w-6 h-6" />
+                            ) : (
+                                <Menu className="w-6 h-6" />
+                            )}
                         </button>
                     </div>
                 </div>
@@ -132,5 +147,5 @@ export default function Header({ cartItemCount }: HeaderProps) {
             {/*    onSuccess={() => {}}*/}
             {/*/>*/}
         </header>
-    );
+    )
 }
