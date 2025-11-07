@@ -1,14 +1,19 @@
+'use client'
 import { Eye, Heart, Award, Users } from 'lucide-react'
+import { UserContext } from '@/contexts/user-context'
+import { useUser } from '@/hooks/use-user'
 
 export default function About() {
+    const { currentUser } = useUser()
+
     return (
         <div className="min-h-screen bg-gray-50">
-            <section className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold mb-6">
+            <section className="bg-gradient-to-br from-emerald-500 to-emerald-600 py-20 text-white">
+                <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+                    <h1 className="mb-6 text-5xl font-bold">
                         About Mira Optik
                     </h1>
-                    <p className="text-xl text-emerald-100 max-w-3xl mx-auto">
+                    <p className="mx-auto max-w-3xl text-xl text-emerald-100">
                         Your trusted partner in vision care since 2010. We
                         believe everyone deserves to see clearly and look great
                         doing it.
@@ -17,27 +22,27 @@ export default function About() {
             </section>
 
             <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                         <div>
-                            <h2 className="text-4xl font-bold text-black mb-6">
+                            <h2 className="mb-6 text-4xl font-bold text-black">
                                 Our Story
                             </h2>
-                            <p className="text-gray-700 mb-4 leading-relaxed">
+                            <p className="mb-4 leading-relaxed text-gray-700">
                                 Mira Optik was founded with a simple mission: to
                                 provide high-quality eyewear that combines
                                 style, comfort, and affordability. What started
                                 as a small local shop has grown into a trusted
                                 online destination for thousands of customers.
                             </p>
-                            <p className="text-gray-700 mb-4 leading-relaxed">
+                            <p className="mb-4 leading-relaxed text-gray-700">
                                 We carefully curate our collection to include
                                 frames that suit every face shape, personal
                                 style, and budget. From classic designs to
                                 trendy statement pieces, we have something for
                                 everyone.
                             </p>
-                            <p className="text-gray-700 leading-relaxed">
+                            <p className="leading-relaxed text-gray-700">
                                 Our commitment to quality means we only work
                                 with reputable manufacturers and use premium
                                 materials. Every pair of glasses is inspected to
@@ -45,28 +50,28 @@ export default function About() {
                                 reaching you.
                             </p>
                         </div>
-                        <div className="rounded-lg overflow-hidden shadow-xl">
+                        <div className="overflow-hidden rounded-lg shadow-xl">
                             <img
                                 src="https://images.pexels.com/photos/1627639/pexels-photo-1627639.jpeg?auto=compress&cs=tinysrgb&w=1200"
                                 alt="Eyewear collection"
-                                className="w-full h-full object-cover"
+                                className="h-full w-full object-cover"
                             />
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-4xl font-bold text-black text-center mb-12">
+            <section className="bg-white py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h2 className="mb-12 text-center text-4xl font-bold text-black">
                         Our Values
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                         <div className="text-center">
-                            <div className="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Eye className="w-10 h-10 text-emerald-600" />
+                            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+                                <Eye className="h-10 w-10 text-emerald-600" />
                             </div>
-                            <h3 className="text-xl font-bold mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Quality Vision
                             </h3>
                             <p className="text-gray-600">
@@ -76,10 +81,10 @@ export default function About() {
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Heart className="w-10 h-10 text-emerald-600" />
+                            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+                                <Heart className="h-10 w-10 text-emerald-600" />
                             </div>
-                            <h3 className="text-xl font-bold mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Customer Care
                             </h3>
                             <p className="text-gray-600">
@@ -89,10 +94,10 @@ export default function About() {
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Award className="w-10 h-10 text-emerald-600" />
+                            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+                                <Award className="h-10 w-10 text-emerald-600" />
                             </div>
-                            <h3 className="text-xl font-bold mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Premium Quality
                             </h3>
                             <p className="text-gray-600">
@@ -102,10 +107,10 @@ export default function About() {
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Users className="w-10 h-10 text-emerald-600" />
+                            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+                                <Users className="h-10 w-10 text-emerald-600" />
                             </div>
-                            <h3 className="text-xl font-bold mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Community
                             </h3>
                             <p className="text-gray-600">
@@ -117,28 +122,28 @@ export default function About() {
                 </div>
             </section>
 
-            <section className="py-16 bg-black text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-4xl font-bold text-center mb-12">
+            <section className="bg-black py-16 text-white">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h2 className="mb-12 text-center text-4xl font-bold">
                         Why Choose Mira Optik?
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="bg-gray-900 p-6 rounded-lg">
-                            <h3 className="text-2xl font-bold text-emerald-500 mb-3">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                        <div className="rounded-lg bg-gray-900 p-6">
+                            <h3 className="mb-3 text-2xl font-bold text-emerald-500">
                                 10,000+
                             </h3>
                             <p className="text-gray-300">
                                 Happy customers worldwide
                             </p>
                         </div>
-                        <div className="bg-gray-900 p-6 rounded-lg">
-                            <h3 className="text-2xl font-bold text-emerald-500 mb-3">
+                        <div className="rounded-lg bg-gray-900 p-6">
+                            <h3 className="mb-3 text-2xl font-bold text-emerald-500">
                                 500+
                             </h3>
                             <p className="text-gray-300">Unique frame styles</p>
                         </div>
-                        <div className="bg-gray-900 p-6 rounded-lg">
-                            <h3 className="text-2xl font-bold text-emerald-500 mb-3">
+                        <div className="rounded-lg bg-gray-900 p-6">
+                            <h3 className="mb-3 text-2xl font-bold text-emerald-500">
                                 15+ Years
                             </h3>
                             <p className="text-gray-300">
@@ -150,18 +155,18 @@ export default function About() {
             </section>
 
             <section className="py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl font-bold text-black mb-6">
+                <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+                    <h2 className="mb-6 text-4xl font-bold text-black">
                         Our Commitment
                     </h2>
-                    <p className="text-gray-700 text-lg leading-relaxed mb-8">
+                    <p className="mb-8 text-lg leading-relaxed text-gray-700">
                         At Mira Optik, we're not just selling glasses we're
                         helping you see the world in a whole new way. Whether
                         you need prescription eyeglasses for daily wear,
                         protective blue light glasses for screen time, or
                         stylish sunglasses for sunny days, we have you covered.
                     </p>
-                    <p className="text-gray-700 text-lg leading-relaxed">
+                    <p className="text-lg leading-relaxed text-gray-700">
                         Thank you for choosing Mira Optik. We look forward to
                         being part of your vision journey.
                     </p>
