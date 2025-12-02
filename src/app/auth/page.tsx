@@ -15,74 +15,98 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Lock, Mail, Loader2, LogIn, UserPlus } from 'lucide-react'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { registerAPI } from "@/api/auth/register.api"
+import { useUser } from "@/hooks/use-user"
 
 export default function AuthPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-    const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [activeTab, setActiveTab] = useState('login')
 
     const router = useRouter()
+    const { login } = useUser()
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault()
-        setError('')
         setLoading(true)
 
         if (!email || !password) {
-            setError('Please fill in all fields')
+            toast.error('Please fill in all fields')
             setLoading(false)
             return
         }
 
-        // const { error } = await signIn(email, password);
+        try {
+            await login(email, password)
+            toast.success('Login successful!')
 
-        if (error) {
-            setError(error)
-            setLoading(false)
-        } else {
+            // Başarılı login sonrası yönlendirme
             router.push('/')
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to login. Please try again.')
+        } finally {
+            setLoading(false)
         }
     }
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
-        setError('')
         setLoading(true)
 
         if (!email || !password || !confirmPassword) {
-            setError('Please fill in all fields')
+            toast.error('Please fill in all fields')
             setLoading(false)
             return
         }
 
         if (password !== confirmPassword) {
-            setError('Passwords do not match')
+            toast.error('Passwords do not match')
             setLoading(false)
             return
         }
 
         if (password.length < 6) {
-            setError('Password must be at least 6 characters')
+            toast.error('Password must be at least 6 characters')
             setLoading(false)
             return
         }
 
-        // const { error } = await signUp(email, password);
+        try {
+            const registerResponse = await registerAPI({ email, password })
+            console.log('Register response:', registerResponse)
+            toast.success('Account created successfully!')
 
-        if (error) {
-            setError(error)
+            // Register sonrası otomatik login (token almak için)
+            await login(email, password)
+            router.push('/')
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to create account. Please try again.')
+        } finally {
             setLoading(false)
-        } else {
-            router.push('/  ')
         }
     }
 
+    const resetForm = () => {
+        setEmail('')
+        setPassword('')
+        setConfirmPassword('')
+        setLoading(false)
+    }
+
+    const handleTabChange = (value: string) => {
+        setActiveTab(value)
+        resetForm()
+    }
+
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4 dark:from-slate-900 dark:to-slate-800">
-            <div className="w-full max-w-md">
+        <>
+            <ToastContainer position="top-right" autoClose={3000} />
+            <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4 dark:from-slate-900 dark:to-slate-800">
+                <div className="w-full max-w-md">
                 <div className="mb-8 text-center">
                     <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">
                         Welcome Back
@@ -94,7 +118,7 @@ export default function AuthPage() {
 
                 <Tabs
                     value={activeTab}
-                    onValueChange={setActiveTab}
+                    onValueChange={handleTabChange}
                     className="w-full"
                 >
                     <TabsList className="mb-6 grid w-full grid-cols-2">
@@ -168,7 +192,7 @@ export default function AuthPage() {
                                 <CardFooter className="flex flex-col space-y-4">
                                     <Button
                                         type="submit"
-                                        variant="primary"
+                                        variant="default"
                                         className="w-full"
                                         disabled={loading}
                                     >
@@ -264,7 +288,7 @@ export default function AuthPage() {
                                 <CardFooter className="flex flex-col space-y-4">
                                     <Button
                                         type="submit"
-                                        variant="primary"
+                                        variant="default"
                                         className="w-full"
                                         disabled={loading}
                                     >
@@ -289,7 +313,8 @@ export default function AuthPage() {
                         </Card>
                     </TabsContent>
                 </Tabs>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
