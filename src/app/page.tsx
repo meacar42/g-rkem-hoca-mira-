@@ -7,30 +7,49 @@ import { Suspense } from 'react'
 import { getProductsAPI } from '@/api/product/product.api'
 import HeroSlider from '@/components/hero-slider'
 
+const slides = [
+    {
+        id: 1,
+        title: 'Discover Your Perfect Pair',
+        description: 'Explore our latest collection of stylish eyewear',
+        imageUrl:
+            'https://images.pexels.com/photos/1005633/pexels-photo-1005633.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        link: '/sunglasses',
+    },
+    {
+        id: 2,
+        title: 'Summer Shades Are Here',
+        description: 'Get ready for the sun with our trendy sunglasses',
+        imageUrl:
+            'https://images.pexels.com/photos/46710/pexels-photo-46710.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        link: '/sunglasses',
+    },
+]
+
 async function ProductList() {
     const products = await getProductsAPI()
     const featuredProducts = products?.filter((p) => p.featured)
 
     return (
         <div className="min-h-screen">
-            <HeroSlider />
+            <HeroSlider slides={slides} />
 
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section className="bg-white py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                         <Link href="/sunglasses" className="group">
-                            <div className="relative h-96 rounded-2xl overflow-hidden shadow-lg">
+                            <div className="relative h-96 overflow-hidden rounded-2xl shadow-lg">
                                 <img
                                     src="https://images.pexels.com/photos/701877/pexels-photo-701877.jpeg?auto=compress&cs=tinysrgb&w=1200"
                                     alt="Sunglasses"
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                                    <div className="p-8 w-full">
-                                        <h2 className="text-4xl font-bold text-white mb-2">
+                                <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 to-transparent">
+                                    <div className="w-full p-8">
+                                        <h2 className="mb-2 text-4xl font-bold text-white">
                                             Sunglasses
                                         </h2>
-                                        <p className="text-gray-200 mb-4">
+                                        <p className="mb-4 text-gray-200">
                                             Protect your eyes in style
                                         </p>
                                         <Button>Shop Now</Button>
@@ -40,18 +59,18 @@ async function ProductList() {
                         </Link>
 
                         <Link href="/eyeglasses" className="group">
-                            <div className="relative h-96 rounded-2xl overflow-hidden shadow-lg">
+                            <div className="relative h-96 overflow-hidden rounded-2xl shadow-lg">
                                 <img
                                     src="https://images.pexels.com/photos/1627639/pexels-photo-1627639.jpeg?auto=compress&cs=tinysrgb&w=1200"
                                     alt="Eyeglasses"
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                                    <div className="p-8 w-full">
-                                        <h2 className="text-4xl font-bold text-white mb-2">
+                                <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 to-transparent">
+                                    <div className="w-full p-8">
+                                        <h2 className="mb-2 text-4xl font-bold text-white">
                                             Eyeglasses
                                         </h2>
-                                        <p className="text-gray-200 mb-4">
+                                        <p className="mb-4 text-gray-200">
                                             Vision meets fashion
                                         </p>
                                         <Button>Shop Now</Button>
@@ -63,18 +82,18 @@ async function ProductList() {
                 </div>
             </section>
 
-            <section className="py-16 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-4xl font-bold text-black mb-4">
+            <section className="bg-gray-50 py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mb-12 text-center">
+                        <h2 className="mb-4 text-4xl font-bold text-black">
                             Featured Collection
                         </h2>
-                        <p className="text-gray-600 text-lg">
+                        <p className="text-lg text-gray-600">
                             Handpicked styles for every personality
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                         {/*{featuredProducts?.map(product => (*/}
                         {/*    <ProductCard*/}
                         {/*        key={product.id}*/}
@@ -84,7 +103,7 @@ async function ProductList() {
                         {/*))}*/}
                     </div>
 
-                    <div className="text-center mt-12">
+                    <div className="mt-12 text-center">
                         <Link href="/sunglasses">
                             <Button size="lg" variant="outline">
                                 View All Products
@@ -94,53 +113,53 @@ async function ProductList() {
                 </div>
             </section>
 
-            <section className="py-16 bg-black text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <section className="bg-black py-16 text-white">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
                         <div className="text-center">
-                            <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Truck className="w-8 h-8" />
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
+                                <Truck className="h-8 w-8" />
                             </div>
-                            <h3 className="font-bold text-xl mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Free Shipping
                             </h3>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-sm text-gray-400">
                                 On orders over $100
                             </p>
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Shield className="w-8 h-8" />
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
+                                <Shield className="h-8 w-8" />
                             </div>
-                            <h3 className="font-bold text-xl mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Quality Guarantee
                             </h3>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-sm text-gray-400">
                                 Premium materials only
                             </p>
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <RotateCcw className="w-8 h-8" />
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
+                                <RotateCcw className="h-8 w-8" />
                             </div>
-                            <h3 className="font-bold text-xl mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 30-Day Returns
                             </h3>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-sm text-gray-400">
                                 Hassle-free returns
                             </p>
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-emerald-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Star className="w-8 h-8" />
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
+                                <Star className="h-8 w-8" />
                             </div>
-                            <h3 className="font-bold text-xl mb-2">
+                            <h3 className="mb-2 text-xl font-bold">
                                 Expert Service
                             </h3>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-sm text-gray-400">
                                 Personalized assistance
                             </p>
                         </div>
@@ -148,18 +167,18 @@ async function ProductList() {
                 </div>
             </section>
 
-            <section className="py-16 bg-emerald-500 text-white">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl font-bold mb-4">Stay Updated</h2>
-                    <p className="text-emerald-100 mb-8 text-lg">
+            <section className="bg-emerald-500 py-16 text-white">
+                <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+                    <h2 className="mb-4 text-4xl font-bold">Stay Updated</h2>
+                    <p className="mb-8 text-lg text-emerald-100">
                         Subscribe to get special offers, new arrivals, and style
                         tips
                     </p>
-                    <form className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+                    <form className="mx-auto flex max-w-xl flex-col gap-4 sm:flex-row">
                         <input
                             type="email"
                             placeholder="Enter your email"
-                            className="flex-1 px-6 py-4 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-white"
+                            className="flex-1 rounded-lg px-6 py-4 text-black focus:outline-none focus:ring-2 focus:ring-white"
                         />
                         <Button variant="secondary" size="lg">
                             Subscribe

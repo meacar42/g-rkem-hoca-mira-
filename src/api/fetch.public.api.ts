@@ -1,3 +1,5 @@
+export const baseURL = process.env.NEXT_PUBLIC_API_URL
+
 export async function fetchPublicAPI<T>(
     url: string,
     options: RequestInit = {},
@@ -20,13 +22,12 @@ export async function fetchPublicAPI<T>(
         })
 
         if (!response.ok) {
-            // Hata mesajını almaya çalış
             let errorMessage = `HTTP Error: ${response.status}`
             try {
                 const errorData = await response.json()
-                errorMessage = errorData.message || errorData.error || errorMessage
+                errorMessage =
+                    errorData.message || errorData.error || errorMessage
             } catch {
-                // JSON parse edilemezse status text kullan
                 errorMessage = response.statusText || errorMessage
             }
             throw new Error(errorMessage)
