@@ -5,6 +5,7 @@ import Button from '@/components/button'
 import ProductCard from '@/components/product-card'
 import { Suspense } from 'react'
 import { getProductsAPI } from '@/api/product/product.api'
+import HeroSlider from '@/components/hero-slider'
 
 async function ProductList() {
     const products = await getProductsAPI()
@@ -12,29 +13,7 @@ async function ProductList() {
 
     return (
         <div className="min-h-screen">
-            <section className="relative h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-gray-50">
-                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/701877/pexels-photo-701877.jpeg?auto=compress&cs=tinysrgb&w=1920')] bg-cover bg-center opacity-10"></div>
-                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-                    <h1 className="text-5xl md:text-7xl font-bold text-black mb-6 leading-tight">
-                        See the World{' '}
-                        <span className="text-emerald-500">Clearly</span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto">
-                        Premium eyewear designed for style, comfort, and
-                        crystal-clear vision
-                    </p>
-                    <div className="flex flex-wrap gap-4 justify-center">
-                        <Link href="/sunglasses">
-                            <Button size="lg">Shop Sunglasses</Button>
-                        </Link>
-                        <Link href="/eyeglasses">
-                            <Button variant="outline" size="lg">
-                                Shop Eyeglasses
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            <HeroSlider />
 
             <section className="py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

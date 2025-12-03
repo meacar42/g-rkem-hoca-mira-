@@ -72,3 +72,11 @@
         @apply bg-background text-foreground;
     }
 }
+
+
+.swiper-pagination-bullet-active {
+    background-color: #FFF !important;
+}
+
+
+
