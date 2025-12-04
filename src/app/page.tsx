@@ -1,11 +1,11 @@
-import { Truck, Shield, RotateCcw, Star } from 'lucide-react'
-import { IProduct } from '@/types/IProduct'
 import Link from 'next/link'
 import Button from '@/components/button'
-import ProductCard from '@/components/product-card'
 import { Suspense } from 'react'
 import { getProductsAPI } from '@/api/product/product.api'
 import HeroSlider from '@/components/hero-slider'
+import { StatsCounter } from '@/components/stats-counter'
+import { InteractiveShowcase } from '@/components/interactive-showcase'
+import { CustomerComments } from '@/components/customer-comments'
 
 const slides = [
     {
@@ -113,78 +113,16 @@ async function ProductList() {
                 </div>
             </section>
 
-            <section className="bg-black py-16 text-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-                        <div className="text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
-                                <Truck className="h-8 w-8" />
-                            </div>
-                            <h3 className="mb-2 text-xl font-bold">
-                                Free Shipping
-                            </h3>
-                            <p className="text-sm text-gray-400">
-                                On orders over $100
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
-                                <Shield className="h-8 w-8" />
-                            </div>
-                            <h3 className="mb-2 text-xl font-bold">
-                                Quality Guarantee
-                            </h3>
-                            <p className="text-sm text-gray-400">
-                                Premium materials only
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
-                                <RotateCcw className="h-8 w-8" />
-                            </div>
-                            <h3 className="mb-2 text-xl font-bold">
-                                30-Day Returns
-                            </h3>
-                            <p className="text-sm text-gray-400">
-                                Hassle-free returns
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
-                                <Star className="h-8 w-8" />
-                            </div>
-                            <h3 className="mb-2 text-xl font-bold">
-                                Expert Service
-                            </h3>
-                            <p className="text-sm text-gray-400">
-                                Personalized assistance
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <section>
+                <InteractiveShowcase />
             </section>
 
-            <section className="bg-emerald-500 py-16 text-white">
-                <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-                    <h2 className="mb-4 text-4xl font-bold">Stay Updated</h2>
-                    <p className="mb-8 text-lg text-emerald-100">
-                        Subscribe to get special offers, new arrivals, and style
-                        tips
-                    </p>
-                    <form className="mx-auto flex max-w-xl flex-col gap-4 sm:flex-row">
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            className="flex-1 rounded-lg px-6 py-4 text-black focus:outline-none focus:ring-2 focus:ring-white"
-                        />
-                        <Button variant="secondary" size="lg">
-                            Subscribe
-                        </Button>
-                    </form>
-                </div>
+            <section>
+                <StatsCounter />
+            </section>
+
+            <section>
+                <CustomerComments />
             </section>
         </div>
     )
