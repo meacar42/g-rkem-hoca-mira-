@@ -6,6 +6,7 @@ import HeroSlider from '@/components/hero-slider'
 import { StatsCounter } from '@/components/stats-counter'
 import { InteractiveShowcase } from '@/components/interactive-showcase'
 import { CustomerComments } from '@/components/customer-comments'
+import getSlidesAPI from '@/api/slide/get-slides.api'
 
 const slides = [
     {
@@ -26,13 +27,18 @@ const slides = [
     },
 ]
 
-async function ProductList() {
-    const products = await getProductsAPI()
-    const featuredProducts = products?.filter((p) => p.featured)
+async function Slides() {
+    const slides = await getSlidesAPI()
 
+    return <HeroSlider slides={slides} />
+}
+
+export default function Home() {
     return (
         <div className="min-h-screen">
-            <HeroSlider slides={slides} />
+            <Suspense fallback={<div>Loading...</div>}>
+                <Slides />
+            </Suspense>
 
             <section className="bg-white py-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -125,13 +131,5 @@ async function ProductList() {
                 <CustomerComments />
             </section>
         </div>
-    )
-}
-
-export default function Home() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <ProductList />
-        </Suspense>
     )
 }
