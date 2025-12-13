@@ -1,8 +1,9 @@
 'use client'
 import React, { createContext, useState, useEffect } from 'react'
-import { loginAPI } from "@/api/auth/login.api"
-import { getMeAPI } from "@/api/auth/me.api"
-import { setTokens, clearTokens, getToken } from "@/utils/auth"
+import { loginAPI } from '@/api/auth/login.api'
+import { registerAPI } from '@/api/auth/register.api'
+import { getMeAPI } from '@/api/auth/me.api'
+import { setTokens, clearTokens, getToken } from '@/utils/auth'
 
 export type ICurrentUser = {
     id: number
@@ -16,6 +17,7 @@ export type ICurrentUser = {
 type UserContextType = {
     currentUser: ICurrentUser | null
     login: (email: string, password: string) => Promise<ICurrentUser>
+    register: (email: string, password: string) => Promise<ICurrentUser>
     logout: () => void
 }
 
@@ -32,30 +34,51 @@ export function UserProvider({
 
     const [user, setUser] = useState<ICurrentUser | null>(currentUser)
 
-    async function login(email: string, password: string): Promise<ICurrentUser> {
+    async function login(
+        email: string,
+        password: string,
+    ): Promise<ICurrentUser> {
         try {
-            console.log('🔐 Login: Starting login process...')
             const response = await loginAPI({ email, password })
-            console.log('✅ Login: Token received')
 
-            // Token'ları kaydet
-            setTokens(response.token, response.refresh_token)
-            console.log('💾 Login: Tokens saved to localStorage')
+            setTokens(response.access_token, response.refresh_token)
 
-            // /me endpoint'inden user bilgilerini al
-            console.log('👤 Login: Fetching user data from /me...')
             const userData = await getMeAPI()
             console.log('✅ Login: User data received:', {
                 id: userData.id,
                 email: userData.email,
-                role: userData.role
+                role: userData.role,
             })
 
             setUser(userData)
             return userData
         } catch (error) {
             console.error('❌ Login error:', error)
-            // Token'ları temizle hata durumunda
+            clearTokens()
+            throw error
+        }
+    }
+
+    async function register(
+        email: string,
+        password: string,
+    ): Promise<ICurrentUser> {
+        try {
+            const response = await registerAPI({ email, password })
+
+            setTokens(response.access_token, response.refresh_token)
+
+            const userData = await getMeAPI()
+            console.log('✅ Register: User data received:', {
+                id: userData.id,
+                email: userData.email,
+                role: userData.role,
+            })
+
+            setUser(userData)
+            return userData
+        } catch (error) {
+            console.error('❌ Register error:', error)
             clearTokens()
             throw error
         }
@@ -66,26 +89,27 @@ export function UserProvider({
         setUser(null)
     }
 
-    // Sayfa yenilendiğinde token varsa user'ı restore et
     useEffect(() => {
         const token = getToken()
         if (token && !user) {
-            // Token varsa /me endpoint'inden user bilgilerini al
             getMeAPI()
                 .then((userData) => {
                     setUser(userData)
                 })
                 .catch((error) => {
-                    console.error('Failed to restore user session:', error)
-                    // Token geçersizse temizle
+                    console.error(
+                        '❌ Auth: Failed to restore user session:',
+                        error,
+                    )
                     clearTokens()
                 })
         }
-    }, [])
+    }, [user])
 
     const value: UserContextType = {
         currentUser: user,
         login,
+        register,
         logout,
     }
 
