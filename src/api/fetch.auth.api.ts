@@ -23,6 +23,7 @@ async function refreshAccessToken(): Promise<string> {
         const response = await refreshTokenAPI({ refresh_token: refreshToken })
 
         setAccessToken(response.access_token)
+        console.log('Auth: Access token refreshed and saved successfully')
 
         return response.access_token
     } catch (error) {

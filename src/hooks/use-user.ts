@@ -14,5 +14,6 @@ export const useUser = () => {
         login: context.login,
         register: context.register,
         logout: context.logout,
+        updateProfile: context.updateProfile,
     }
 }
