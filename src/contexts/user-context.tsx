@@ -104,7 +104,7 @@ export function UserProvider({
                     clearTokens()
                 })
         }
-    }, [user])
+    }, [])
 
     const value: UserContextType = {
         currentUser: user,
