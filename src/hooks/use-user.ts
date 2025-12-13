@@ -12,6 +12,7 @@ export const useUser = () => {
         currentUser: context.currentUser,
         isLoggedIn: !!context.currentUser,
         login: context.login,
+        register: context.register,
         logout: context.logout,
     }
 }

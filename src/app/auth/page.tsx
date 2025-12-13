@@ -34,19 +34,19 @@ export default function AuthPage() {
         setLoading(true)
 
         if (!email || !password) {
-            toast.error('Please fill in all fields')
+            toast.error('Lütfen tüm alanları doldurun')
             setLoading(false)
             return
         }
 
         try {
             await login(email, password)
-            toast.success('Login successful!')
 
-            // Başarılı login sonrası yönlendirme
             router.push('/')
         } catch (err: any) {
-            toast.error(err.message || 'Failed to login. Please try again.')
+            toast.error(
+                err.message || 'Giriş başarısız. Lütfen tekrar deneyin.',
+            )
         } finally {
             setLoading(false)
         }
@@ -57,32 +57,31 @@ export default function AuthPage() {
         setLoading(true)
 
         if (!email || !password || !confirmPassword) {
-            toast.error('Please fill in all fields')
+            toast.error('Lütfen tüm alanları doldurun')
             setLoading(false)
             return
         }
 
         if (password !== confirmPassword) {
-            toast.error('Passwords do not match')
+            toast.error('Şifreler eşleşmiyor')
             setLoading(false)
             return
         }
 
         if (password.length < 6) {
-            toast.error('Password must be at least 6 characters')
+            toast.error('Şifre en az 6 karakter olmalıdır')
             setLoading(false)
             return
         }
 
         try {
             await register(email, password)
-            toast.success('Account created successfully!')
+            toast.success('Hesap başarıyla oluşturuldu!')
 
-            // Başarılı register sonrası yönlendirme
             router.push('/')
         } catch (err: any) {
             toast.error(
-                err.message || 'Failed to create account. Please try again.',
+                err.message || 'Kayıt başarısız. Lütfen tekrar deneyin.',
             )
         } finally {
             setLoading(false)
@@ -108,10 +107,10 @@ export default function AuthPage() {
                 <div className="w-full max-w-md">
                     <div className="mb-8 text-center">
                         <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">
-                            Welcome Back
+                            Hoşgeldiniz
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400">
-                            Sign in to your account or create a new one
+                            Hesabınıza giriş yapın veya yeni bir hesap oluşturun
                         </p>
                     </div>
 
@@ -126,24 +125,26 @@ export default function AuthPage() {
                                 className="flex items-center gap-2"
                             >
                                 <LogIn className="h-4 w-4" />
-                                Login
+                                Giriş Yap
                             </TabsTrigger>
                             <TabsTrigger
                                 value="register"
                                 className="flex items-center gap-2"
                             >
                                 <UserPlus className="h-4 w-4" />
-                                Register
+                                Kayıt Ol
                             </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="login">
                             <Card className="border-0 shadow-xl">
                                 <CardHeader>
-                                    <CardTitle>Login to your account</CardTitle>
+                                    <CardTitle>
+                                        Hesabınıza Giriş Yapın
+                                    </CardTitle>
                                     <CardDescription>
-                                        Enter your credentials to access your
-                                        account
+                                        Devam etmek için e-posta ve şifrenizi
+                                        girin
                                     </CardDescription>
                                 </CardHeader>
                                 <form onSubmit={handleLogin}>
@@ -157,7 +158,7 @@ export default function AuthPage() {
                                                 <Input
                                                     id="login-email"
                                                     type="email"
-                                                    placeholder="you@example.com"
+                                                    placeholder="mail@example.com"
                                                     value={email}
                                                     onChange={(e) =>
                                                         setEmail(e.target.value)
@@ -170,7 +171,7 @@ export default function AuthPage() {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="login-password">
-                                                Password
+                                                Şifre
                                             </Label>
                                             <div className="relative">
                                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -200,12 +201,12 @@ export default function AuthPage() {
                                             {loading ? (
                                                 <>
                                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                    Signing in...
+                                                    Giriş yapılıyor...
                                                 </>
                                             ) : (
                                                 <>
                                                     <LogIn className="mr-2 h-4 w-4" />
-                                                    Sign In
+                                                    Giriş Yap
                                                 </>
                                             )}
                                         </Button>
@@ -217,10 +218,10 @@ export default function AuthPage() {
                         <TabsContent value="register">
                             <Card className="border-0 shadow-xl">
                                 <CardHeader>
-                                    <CardTitle>Create an account</CardTitle>
+                                    <CardTitle>Hesap Oluştur</CardTitle>
                                     <CardDescription>
-                                        Sign up to get started with your new
-                                        account
+                                        Yeni bir hesap oluşturmak için
+                                        bilgilerinizi girin
                                     </CardDescription>
                                 </CardHeader>
                                 <form onSubmit={handleRegister}>
@@ -247,7 +248,7 @@ export default function AuthPage() {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="register-password">
-                                                Password
+                                                Şifre
                                             </Label>
                                             <div className="relative">
                                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -269,7 +270,7 @@ export default function AuthPage() {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="confirm-password">
-                                                Confirm Password
+                                                Şifre Tekrarı
                                             </Label>
                                             <div className="relative">
                                                 <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -299,7 +300,7 @@ export default function AuthPage() {
                                             {loading ? (
                                                 <>
                                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                    Creating account...
+                                                    Hesap oluşturuluyor...
                                                 </>
                                             ) : (
                                                 <>
@@ -309,8 +310,8 @@ export default function AuthPage() {
                                             )}
                                         </Button>
                                         <p className="text-center text-xs text-slate-600 dark:text-slate-400">
-                                            By signing up, you agree to our
-                                            Terms of Service and Privacy Policy
+                                            Kayıt olarak, şartları ve koşulları
+                                            kabul etmiş olursunuz.
                                         </p>
                                     </CardFooter>
                                 </form>
