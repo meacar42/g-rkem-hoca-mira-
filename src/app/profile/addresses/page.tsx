@@ -1,68 +1,166 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, MapPin, Edit, Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Plus, MapPin, Edit, Trash2, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-
-// Mock adres verisi
-const mockAddresses = [
-    {
-        id: 1,
-        title: 'Ev',
-        fullName: 'Ahmet Yılmaz',
-        phone: '+90 532 123 45 67',
-        address: 'Atatürk Caddesi No:123 Daire:5',
-        district: 'Kadıköy',
-        city: 'İstanbul',
-        postalCode: '34710',
-        isDefault: true,
-    },
-    {
-        id: 2,
-        title: 'İş',
-        fullName: 'Ahmet Yılmaz',
-        phone: '+90 532 123 45 67',
-        address: 'İş Merkezi Kat:8 No:42',
-        district: 'Şişli',
-        city: 'İstanbul',
-        postalCode: '34360',
-        isDefault: false,
-    },
-]
+import { Skeleton } from '@/components/ui/skeleton'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import {
+    getAddressesAPI,
+    deleteAddressAPI,
+    setDefaultAddressAPI,
+    IAddress,
+} from '@/api/address/addresses.api'
 
 export default function AddressesPage() {
-    const [addresses] = useState(mockAddresses)
+    const router = useRouter()
+    const [addresses, setAddresses] = useState<IAddress[]>([])
+    const [loading, setLoading] = useState(true)
+    const [actionLoading, setActionLoading] = useState<number | null>(null)
 
-    return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="border-b bg-white">
-                <div className="container mx-auto px-4 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/profile">
-                                <Button variant="ghost" size="icon">
-                                    <ArrowLeft className="h-5 w-5" />
+    // Adresleri yükle
+    useEffect(() => {
+        loadAddresses()
+    }, [])
+
+    const loadAddresses = async () => {
+        try {
+            setLoading(true)
+            const data = await getAddressesAPI()
+            setAddresses(data)
+        } catch (error: any) {
+            toast.error(error.message || 'Adresler yüklenirken bir hata oluştu')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleDelete = async (addressId: number, title: string) => {
+        const confirmed = window.confirm(
+            `"${title}" adresini silmek istediğinizden emin misiniz?`,
+        )
+
+        if (!confirmed) return
+
+        try {
+            setActionLoading(addressId)
+            await deleteAddressAPI(addressId)
+            toast.success('Adres başarıyla silindi')
+            loadAddresses()
+        } catch (error: any) {
+            toast.error(error.message || 'Adres silinirken bir hata oluştu')
+        } finally {
+            setActionLoading(null)
+        }
+    }
+
+    const handleSetDefault = async (addressId: number) => {
+        try {
+            setActionLoading(addressId)
+            await setDefaultAddressAPI(addressId)
+            toast.success('Varsayılan adres güncellendi')
+            loadAddresses()
+        } catch (error: any) {
+            toast.error(
+                error.message ||
+                    'Varsayılan adres ayarlanırken bir hata oluştu',
+            )
+        } finally {
+            setActionLoading(null)
+        }
+    }
+
+    // Loading skeleton
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50">
+                <div className="border-b bg-white">
+                    <div className="container mx-auto px-4 py-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <Link href="/profile">
+                                    <Button variant="ghost" size="icon">
+                                        <ArrowLeft className="h-5 w-5" />
+                                    </Button>
+                                </Link>
+                                <h1 className="text-2xl font-semibold text-foreground">
+                                    Adreslerim
+                                </h1>
+                            </div>
+                            <Link href="/profile/addresses/new">
+                                <Button className="bg-emerald-500 text-white hover:bg-emerald-600">
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Yeni Adres
                                 </Button>
                             </Link>
-                            <h1 className="text-2xl font-semibold text-foreground">
-                                Adreslerim
-                            </h1>
                         </div>
-                        <Link href="/profile/addresses/new">
-                            <Button className="bg-emerald-500 text-white hover:bg-emerald-600">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Yeni Adres
-                            </Button>
-                        </Link>
+                    </div>
+                </div>
+
+                <div className="container mx-auto max-w-4xl px-4 py-8">
+                    <div className="space-y-4">
+                        {[1, 2, 3].map((i) => (
+                            <Card key={i} className="p-6">
+                                <div className="mb-4 flex items-start justify-between">
+                                    <div className="flex items-start gap-3">
+                                        <Skeleton className="h-10 w-10 rounded-lg" />
+                                        <div className="space-y-2">
+                                            <Skeleton className="h-5 w-32" />
+                                            <Skeleton className="h-4 w-40" />
+                                            <Skeleton className="h-4 w-36" />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Skeleton className="h-9 w-9" />
+                                        <Skeleton className="h-9 w-9" />
+                                    </div>
+                                </div>
+                                <div className="pl-13 space-y-1">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-3/4" />
+                                </div>
+                            </Card>
+                        ))}
                     </div>
                 </div>
             </div>
+        )
+    }
 
-            <div className="container mx-auto max-w-4xl px-4 py-8">
+    return (
+        <>
+            <ToastContainer position="top-right" autoClose={3000} />
+            <div className="min-h-screen bg-gray-50">
+                {/* Header */}
+                <div className="border-b bg-white">
+                    <div className="container mx-auto px-4 py-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <Link href="/profile">
+                                    <Button variant="ghost" size="icon">
+                                        <ArrowLeft className="h-5 w-5" />
+                                    </Button>
+                                </Link>
+                                <h1 className="text-2xl font-semibold text-foreground">
+                                    Adreslerim
+                                </h1>
+                            </div>
+                            <Link href="/profile/addresses/new">
+                                <Button className="bg-emerald-500 text-white hover:bg-emerald-600">
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Yeni Adres
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="container mx-auto max-w-4xl px-4 py-8">
                 {addresses.length === 0 ? (
                     <Card className="p-12">
                         <div className="space-y-4 text-center">
@@ -117,19 +215,59 @@ export default function AddressesPage() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button variant="ghost" size="icon">
+                                        {!address.isDefault && (
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() =>
+                                                    handleSetDefault(address.id)
+                                                }
+                                                disabled={
+                                                    actionLoading === address.id
+                                                }
+                                                title="Varsayılan yap"
+                                            >
+                                                <Star className="h-4 w-4 text-yellow-500" />
+                                            </Button>
+                                        )}
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/profile/addresses/new?edit=${address.id}`,
+                                                )
+                                            }
+                                            disabled={
+                                                actionLoading === address.id
+                                            }
+                                        >
                                             <Edit className="h-4 w-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() =>
+                                                handleDelete(
+                                                    address.id,
+                                                    address.title,
+                                                )
+                                            }
+                                            disabled={
+                                                actionLoading === address.id
+                                            }
+                                        >
                                             <Trash2 className="h-4 w-4 text-destructive" />
                                         </Button>
                                     </div>
                                 </div>
                                 <div className="pl-13 text-sm text-muted-foreground">
-                                    <p>{address.address}</p>
+                                    <p>{address.addressDetail}</p>
                                     <p>
-                                        {address.district} / {address.city}{' '}
-                                        {address.postalCode}
+                                        {address.districtName} /{' '}
+                                        {address.cityName}{' '}
+                                        {address.postalCode &&
+                                            `- ${address.postalCode}`}
                                     </p>
                                 </div>
                             </Card>
@@ -138,5 +276,6 @@ export default function AddressesPage() {
                 )}
             </div>
         </div>
+        </>
     )
 }
