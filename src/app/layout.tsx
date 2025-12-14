@@ -30,7 +30,7 @@ export default async function RootLayout({
     children: React.ReactNode
 }>) {
     // Server-side'da şehirleri yükle
-    let cities = []
+    let cities = [] as Awaited<ReturnType<typeof getCitiesAPI>>
     try {
         cities = await getCitiesAPI()
     } catch (error) {
