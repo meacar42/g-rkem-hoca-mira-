@@ -20,6 +20,7 @@ export type ICurrentUser = {
 
 type UserContextType = {
     currentUser: ICurrentUser | null
+    loading: boolean
     login: (email: string, password: string) => Promise<ICurrentUser>
     register: (email: string, password: string) => Promise<ICurrentUser>
     updateProfile: (data: IUpdateProfileRequest) => Promise<ICurrentUser>
@@ -35,9 +36,8 @@ export function UserProvider({
     currentUser: ICurrentUser | null
     children: React.ReactNode
 }) {
-    console.log('User Provider currentUser:', currentUser)
-
     const [user, setUser] = useState<ICurrentUser | null>(currentUser)
+    const [loading, setLoading] = useState<boolean>(true)
 
     async function login(
         email: string,
@@ -49,11 +49,6 @@ export function UserProvider({
             setTokens(response.access_token, response.refresh_token)
 
             const userData = await getMeAPI()
-            console.log('Login: User data received:', {
-                id: userData.id,
-                email: userData.email,
-                role: userData.role,
-            })
 
             setUser(userData)
             return userData
@@ -74,11 +69,6 @@ export function UserProvider({
             setTokens(response.access_token, response.refresh_token)
 
             const userData = await getMeAPI()
-            console.log('Register: User data received:', {
-                id: userData.id,
-                email: userData.email,
-                role: userData.role,
-            })
 
             setUser(userData)
             return userData
@@ -114,11 +104,14 @@ export function UserProvider({
 
     useEffect(() => {
         const token = getToken()
-        if (token && !user) {
-            console.log('Auth: Restoring user session from token...')
+        if (token) {
+            if (user) {
+                setLoading(false)
+                return
+            }
+            setLoading(true)
             getMeAPI()
                 .then((userData) => {
-                    console.log('Auth: User session restored successfully')
                     setUser(userData)
                 })
                 .catch((error) => {
@@ -128,12 +121,19 @@ export function UserProvider({
                     )
                     clearTokens()
                 })
+                .finally(() => {
+                    setLoading(false)
+                })
+        } else {
+            setLoading(false)
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const value: UserContextType = {
         currentUser: user,
+        loading,
         login,
         register,
         updateProfile,

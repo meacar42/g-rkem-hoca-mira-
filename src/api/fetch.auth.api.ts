@@ -19,11 +19,9 @@ async function refreshAccessToken(): Promise<string> {
     }
 
     try {
-        console.log('Auth: Refreshing access token...')
         const response = await refreshTokenAPI({ refresh_token: refreshToken })
 
         setAccessToken(response.access_token)
-        console.log('Auth: Access token refreshed and saved successfully')
 
         return response.access_token
     } catch (error) {
@@ -55,12 +53,6 @@ export async function fetchAuthAPI<T>(
         })
 
         headers.set('Authorization', `Bearer ${accessToken}`)
-
-        console.log('Auth API Request:', {
-            url,
-            hasToken: !!accessToken,
-            authHeader: headers.get('Authorization')?.substring(0, 20) + '...',
-        })
 
         return fetch(url, {
             ...options,
