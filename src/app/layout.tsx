@@ -8,6 +8,7 @@ import { LocationProvider } from '@/contexts/location-context'
 import { getCitiesAPI } from '@/api/location/location.api'
 import Footer from '@/components/footer'
 import { CartProvider } from '@/contexts/cart-context'
+import { ReactNode } from 'react'
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
