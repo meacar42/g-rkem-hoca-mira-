@@ -5,6 +5,7 @@ import Header from '@/components/header'
 
 import { UserProvider } from '@/contexts/user-context'
 import Footer from '@/components/footer'
+import { CartProvider } from '@/contexts/cart-context'
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -33,9 +34,11 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <UserProvider currentUser={null}>
-                    <Header cartItemCount={0} />
-                    {children}
-                    <Footer />
+                    <CartProvider isLoggedIn={false}>
+                        <Header cartItemCount={0} />
+                        {children}
+                        <Footer />
+                    </CartProvider>
                 </UserProvider>
             </body>
         </html>
