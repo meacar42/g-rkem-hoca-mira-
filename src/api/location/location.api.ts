@@ -13,7 +13,7 @@ export interface IDistrict {
 
 export async function getCitiesAPI(): Promise<ICity[]> {
     return fetchPublicAPI<ICity[]>(
-        process.env.NEXT_PUBLIC_BACKEND_API_URL + 'cities',
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/cities',
         {
             method: 'GET',
         },

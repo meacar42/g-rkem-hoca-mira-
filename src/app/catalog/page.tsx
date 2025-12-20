@@ -2,242 +2,176 @@
 import { SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/product-card'
-import { IProduct } from '@/types/IProduct'
+import { IProduct, FrameType, Gender } from '@/types/IProduct'
 import { getProductsAPI } from '@/api/product/product.api'
+import { useCart } from '@/contexts/cart-context'
 
 interface FilterOptions {
-    category: string
-    frameShape: string
-    color: string
-    priceRange: string
-    gender: string
+    frameType: FrameType | ''
+    gender: Gender | ''
+}
+
+const frameTypeLabels: Record<FrameType, string> = {
+    [FrameType.FULL_RIM]: 'Tam Çerçeve',
+    [FrameType.SEMI_RIMLESS]: 'Yarım Çerçeve',
+    [FrameType.RIMLESS]: 'Çerçevesiz',
+    [FrameType.CATE_EYE]: 'Kedi Gözü',
+    [FrameType.ROUND]: 'Yuvarlak',
+    [FrameType.AVIATOR]: 'Pilot',
+    [FrameType.SQUARE]: 'Kare',
+    [FrameType.RECTANGLE]: 'Dikdörtgen',
+    [FrameType.WAYFARER]: 'Wayfarer',
+    [FrameType.OVERSIZED]: 'Büyük Boy',
+}
+
+const genderLabels: Record<Gender, string> = {
+    [Gender.MALE]: 'Erkek',
+    [Gender.FEMALE]: 'Kadın',
+    [Gender.UNISEX]: 'Unisex',
 }
 
 export default function CatalogPage() {
-    const [category, setCategory] = useState('sunglasses')
     const [products, setProducts] = useState<IProduct[]>([])
-
+    const [loading, setLoading] = useState(true)
     const [filters, setFilters] = useState<FilterOptions>({
-        category: category || '',
-        frameShape: '',
-        color: '',
-        priceRange: '',
+        frameType: '',
         gender: '',
     })
-    const [sortBy, setSortBy] = useState('featured')
+    const [sortBy, setSortBy] = useState<'price-low' | 'price-high'>(
+        'price-low',
+    )
     const [showFilters, setShowFilters] = useState(false)
 
+    const { addToCart } = useCart()
+
     const filteredProducts = products.filter((product) => {
-        if (filters.category && product.category !== filters.category)
+        if (filters.frameType && product.frameType !== filters.frameType)
             return false
-        if (filters.frameShape && product.frameShape !== filters.frameShape)
-            return false
-        if (
-            filters.gender &&
-            product.gender !== filters.gender &&
-            product.gender !== 'unisex'
-        )
-            return false
-        if (filters.priceRange) {
-            const [min, max] = filters.priceRange.split('-').map(Number)
-            if (max && (product.price < min || product.price > max))
-                return false
-            if (!max && product.price < min) return false
-        }
+        if (filters.gender && product.gender !== filters.gender) return false
         return true
     })
 
     const sortedProducts = [...filteredProducts].sort((a, b) => {
-        switch (sortBy) {
-            case 'price-low':
-                return a.price - b.price
-            case 'price-high':
-                return b.price - a.price
-            case 'name':
-                return a.name.localeCompare(b.name)
-            default:
-                return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+        if (sortBy === 'price-low') {
+            return a.price - b.price
+        } else {
+            return b.price - a.price
         }
     })
 
-    const frameShapes = [...new Set(products.map((p) => p.frameShape))]
-    const genders = ['men', 'women', 'unisex']
+    const frameTypes = Object.values(FrameType)
+    const genders = Object.values(Gender)
 
     const clearFilters = () => {
         setFilters({
-            category: category || '',
-            frameShape: '',
-            color: '',
-            priceRange: '',
+            frameType: '',
             gender: '',
         })
     }
 
-    const activeFiltersCount = Object.values(filters).filter(
-        (v) => v && v !== category,
-    ).length
+    const activeFiltersCount = Object.values(filters).filter((v) => v).length
 
     useEffect(() => {
-        getProductsAPI().then((data) => setProducts(data))
+        getProductsAPI().then((data) => {
+            setProducts(data)
+            setLoading(false)
+        })
     }, [])
+
+    if (loading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <div className="h-16 w-16 animate-spin rounded-full border-t-4 border-emerald-500"></div>
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-black mb-2">
-                        {category
-                            ? category === 'sunglasses'
-                                ? 'Sunglasses'
-                                : 'Eyeglasses'
-                            : 'All Products'}
+                    <h1 className="mb-2 text-4xl font-bold text-black">
+                        Gözlükler
                     </h1>
-                    {/*<p className="text-gray-600">{sortedProducts.length} products found</p>*/}
+                    <p className="text-gray-600">
+                        Toplam {sortedProducts.length} Ürün Bulundu
+                    </p>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col gap-8 lg:flex-row">
                     <button
-                        onClick={() => {}}
-                        className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                        onClick={() => setShowFilters(!showFilters)}
+                        className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 hover:bg-gray-50 lg:hidden"
                     >
-                        <SlidersHorizontal className="w-5 h-5" />
-                        <span>Filters</span>
+                        <SlidersHorizontal className="h-5 w-5" />
+                        <span>Filtreler</span>
                         {activeFiltersCount > 0 && (
-                            <span className="bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <span className="rounded-full bg-emerald-500 px-2 py-1 text-xs font-bold text-white">
                                 {activeFiltersCount}
                             </span>
                         )}
                     </button>
 
                     <aside
-                        className={`${showFilters ? 'block' : 'hidden'} lg:block w-full lg:w-64 flex-shrink-0`}
+                        className={`${showFilters ? 'block' : 'hidden'} w-full flex-shrink-0 lg:block lg:w-64`}
                     >
-                        <div className="bg-white p-6 rounded-lg shadow-sm sticky top-24">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="font-bold text-lg">Filters</h2>
+                        <div className="sticky top-24 rounded-lg bg-white p-6 shadow-sm">
+                            <div className="mb-6 flex items-center justify-between">
+                                <h2 className="text-lg font-bold">Filtreler</h2>
                                 {activeFiltersCount > 0 && (
                                     <button
-                                        onClick={() => {}}
-                                        className="text-emerald-500 text-sm hover:text-emerald-600 flex items-center gap-1"
+                                        onClick={clearFilters}
+                                        className="flex items-center gap-1 text-sm text-emerald-500 hover:text-emerald-600"
                                     >
-                                        <X className="w-4 h-4" />
-                                        Clear
+                                        <X className="h-4 w-4" />
+                                        Temizle
                                     </button>
                                 )}
                             </div>
 
-                            {!category && (
-                                <div className="mb-6">
-                                    <h3 className="font-semibold mb-3 text-gray-900">
-                                        Category
-                                    </h3>
-                                    <div className="space-y-2">
-                                        <label className="flex items-center">
-                                            <input
-                                                type="radio"
-                                                name="category"
-                                                checked={
-                                                    filters.category === ''
-                                                }
-                                                onChange={() =>
-                                                    setFilters({
-                                                        ...filters,
-                                                        category: '',
-                                                    })
-                                                }
-                                                className="mr-2 accent-emerald-500"
-                                            />
-                                            <span className="text-gray-700">
-                                                All
-                                            </span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="radio"
-                                                name="category"
-                                                checked={
-                                                    filters.category ===
-                                                    'sunglasses'
-                                                }
-                                                onChange={() =>
-                                                    setFilters({
-                                                        ...filters,
-                                                        category: 'sunglasses',
-                                                    })
-                                                }
-                                                className="mr-2 accent-emerald-500"
-                                            />
-                                            <span className="text-gray-700">
-                                                Sunglasses
-                                            </span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="radio"
-                                                name="category"
-                                                checked={
-                                                    filters.category ===
-                                                    'eyeglasses'
-                                                }
-                                                onChange={() =>
-                                                    setFilters({
-                                                        ...filters,
-                                                        category: 'eyeglasses',
-                                                    })
-                                                }
-                                                className="mr-2 accent-emerald-500"
-                                            />
-                                            <span className="text-gray-700">
-                                                Eyeglasses
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-                            )}
-
                             <div className="mb-6">
-                                <h3 className="font-semibold mb-3 text-gray-900">
-                                    Frame Shape
+                                <h3 className="mb-3 font-semibold text-gray-900">
+                                    Çerçeve Tipi
                                 </h3>
                                 <div className="space-y-2">
                                     <label className="flex items-center">
                                         <input
                                             type="radio"
-                                            name="frameShape"
-                                            checked={filters.frameShape === ''}
+                                            name="frameType"
+                                            checked={filters.frameType === ''}
                                             onChange={() =>
                                                 setFilters({
                                                     ...filters,
-                                                    frameShape: '',
+                                                    frameType: '',
                                                 })
                                             }
                                             className="mr-2 accent-emerald-500"
                                         />
                                         <span className="text-gray-700">
-                                            All
+                                            Tümü
                                         </span>
                                     </label>
-                                    {frameShapes.map((shape) => (
+                                    {frameTypes.map((type) => (
                                         <label
-                                            key={shape}
+                                            key={type}
                                             className="flex items-center"
                                         >
                                             <input
                                                 type="radio"
-                                                name="frameShape"
+                                                name="frameType"
                                                 checked={
-                                                    filters.frameShape === shape
+                                                    filters.frameType === type
                                                 }
                                                 onChange={() =>
                                                     setFilters({
                                                         ...filters,
-                                                        frameShape: shape,
+                                                        frameType: type,
                                                     })
                                                 }
                                                 className="mr-2 accent-emerald-500"
                                             />
                                             <span className="text-gray-700">
-                                                {shape}
+                                                {frameTypeLabels[type]}
                                             </span>
                                         </label>
                                     ))}
@@ -245,90 +179,8 @@ export default function CatalogPage() {
                             </div>
 
                             <div className="mb-6">
-                                <h3 className="font-semibold mb-3 text-gray-900">
-                                    Price Range
-                                </h3>
-                                <div className="space-y-2">
-                                    <label className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            name="priceRange"
-                                            checked={filters.priceRange === ''}
-                                            onChange={() =>
-                                                setFilters({
-                                                    ...filters,
-                                                    priceRange: '',
-                                                })
-                                            }
-                                            className="mr-2 accent-emerald-500"
-                                        />
-                                        <span className="text-gray-700">
-                                            All
-                                        </span>
-                                    </label>
-                                    <label className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            name="priceRange"
-                                            checked={
-                                                filters.priceRange === '0-100'
-                                            }
-                                            onChange={() =>
-                                                setFilters({
-                                                    ...filters,
-                                                    priceRange: '0-100',
-                                                })
-                                            }
-                                            className="mr-2 accent-emerald-500"
-                                        />
-                                        <span className="text-gray-700">
-                                            Under $100
-                                        </span>
-                                    </label>
-                                    <label className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            name="priceRange"
-                                            checked={
-                                                filters.priceRange === '100-150'
-                                            }
-                                            onChange={() =>
-                                                setFilters({
-                                                    ...filters,
-                                                    priceRange: '100-150',
-                                                })
-                                            }
-                                            className="mr-2 accent-emerald-500"
-                                        />
-                                        <span className="text-gray-700">
-                                            $100 - $150
-                                        </span>
-                                    </label>
-                                    <label className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            name="priceRange"
-                                            checked={
-                                                filters.priceRange === '150'
-                                            }
-                                            onChange={() =>
-                                                setFilters({
-                                                    ...filters,
-                                                    priceRange: '150',
-                                                })
-                                            }
-                                            className="mr-2 accent-emerald-500"
-                                        />
-                                        <span className="text-gray-700">
-                                            $150+
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div className="mb-6">
-                                <h3 className="font-semibold mb-3 text-gray-900">
-                                    Gender
+                                <h3 className="mb-3 font-semibold text-gray-900">
+                                    Cinsiyet
                                 </h3>
                                 <div className="space-y-2">
                                     <label className="flex items-center">
@@ -345,7 +197,7 @@ export default function CatalogPage() {
                                             className="mr-2 accent-emerald-500"
                                         />
                                         <span className="text-gray-700">
-                                            All
+                                            Tümü
                                         </span>
                                     </label>
                                     {genders.map((gender) => (
@@ -367,8 +219,8 @@ export default function CatalogPage() {
                                                 }
                                                 className="mr-2 accent-emerald-500"
                                             />
-                                            <span className="text-gray-700 capitalize">
-                                                {gender}
+                                            <span className="capitalize text-gray-700">
+                                                {genderLabels[gender]}
                                             </span>
                                         </label>
                                     ))}
@@ -378,44 +230,48 @@ export default function CatalogPage() {
                     </aside>
 
                     <div className="flex-1">
-                        <div className="mb-6 flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
-                            <span className="text-gray-700 font-medium">
-                                Sort by:
+                        <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
+                            <span className="font-medium text-gray-700">
+                                Sırala
                             </span>
                             <select
                                 value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                onChange={(e) =>
+                                    setSortBy(
+                                        e.target.value as
+                                            | 'price-low'
+                                            | 'price-high',
+                                    )
+                                }
+                                className="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                             >
-                                <option value="featured">Featured</option>
-                                <option value="price-low">
-                                    Price: Low to High
-                                </option>
+                                <option value="price-low">Fiyat (Düşük)</option>
                                 <option value="price-high">
-                                    Price: High to Low
+                                    Fiyat (Yüksek)
                                 </option>
-                                <option value="name">Name</option>
                             </select>
                         </div>
 
                         {sortedProducts.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                 {sortedProducts.map((product) => (
                                     <ProductCard
                                         key={product.id}
                                         product={product}
-                                        onAddToCart={() => {}}
+                                        onAddToCart={() =>
+                                            addToCart(product.id, 1)
+                                        }
                                     />
                                 ))}
                             </div>
                         ) : (
-                            <div className="bg-white p-12 rounded-lg shadow-sm text-center">
-                                <p className="text-gray-500 text-lg">
+                            <div className="rounded-lg bg-white p-12 text-center shadow-sm">
+                                <p className="text-lg text-gray-500">
                                     No products found matching your filters.
                                 </p>
                                 <button
                                     onClick={clearFilters}
-                                    className="mt-4 text-emerald-500 hover:text-emerald-600 font-medium"
+                                    className="mt-4 font-medium text-emerald-500 hover:text-emerald-600"
                                 >
                                     Clear all filters
                                 </button>
@@ -427,3 +283,5 @@ export default function CatalogPage() {
         </div>
     )
 }
+
+export { frameTypeLabels, genderLabels }

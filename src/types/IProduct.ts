@@ -1,17 +1,49 @@
+import IBrand from '@/types/IBrand'
+import IModel from '@/types/IModel'
+
 export interface IProduct {
-    id: string
+    id: number
     name: string
-    price: number
-    category: 'sunglasses' | 'eyeglasses'
+    slug: string
     description: string
-    image: string
+    type: ProductType // product_type
+    price: number
+    discount?: number
+    stockQuantity: number
+    brand: IBrand
+    model: IModel
+    gender: Gender
     images: string[]
-    frameShape: string
-    color: string
-    gender: 'men' | 'women' | 'unisex'
-    material: string
-    dimensions: string
-    weight: string
-    inStock: boolean
-    featured?: boolean
+    frameType: FrameType // frame_type
+    material?: string // frame_material
+    color?: string // frame_color
+    lensWidth?: string // lens_width
+    bridgeWidth?: string // bridge_width
+    templeLength?: string // temple_length
+    lensType?: string // lens_type
+}
+
+export enum Gender {
+    MALE = 'male',
+    FEMALE = 'female',
+    UNISEX = 'unisex',
+}
+
+export enum FrameType {
+    FULL_RIM = 'full_rim',
+    SEMI_RIMLESS = 'semi_rimless',
+    RIMLESS = 'rimless',
+    CATE_EYE = 'cate_eye',
+    ROUND = 'round',
+    AVIATOR = 'aviator',
+    SQUARE = 'square',
+    RECTANGLE = 'rectangle',
+    WAYFARER = 'wayfarer',
+    OVERSIZED = 'oversized',
+}
+
+export enum ProductType {
+    SUNGLASS = 'sunglasses',
+    PRESCRIPTION = 'prescription',
+    SOLUTION = 'solution',
 }
