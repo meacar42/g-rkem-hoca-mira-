@@ -10,8 +10,11 @@ export const useUser = () => {
 
     return {
         currentUser: context.currentUser,
+        loading: context.loading,
         isLoggedIn: !!context.currentUser,
         login: context.login,
+        register: context.register,
         logout: context.logout,
+        updateProfile: context.updateProfile,
     }
 }

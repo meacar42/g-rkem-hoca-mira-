@@ -1,4 +1,4 @@
-export const baseURL = process.env.NEXT_PUBLIC_API_URL
+export const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL
 
 export async function fetchPublicAPI<T>(
     url: string,
