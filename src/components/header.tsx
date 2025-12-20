@@ -9,7 +9,6 @@ import {
     LogOut,
 } from 'lucide-react'
 import Link from 'next/link'
-import { router } from 'next/client'
 import { useUser } from '@/hooks/use-user'
 
 interface HeaderProps {
@@ -18,8 +17,6 @@ interface HeaderProps {
 
 export default function Header({ cartItemCount }: HeaderProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-    const { currentUser } = useUser()
 
     const navigation = [
         { name: 'Home', href: '/' },
@@ -69,7 +66,7 @@ export default function Header({ cartItemCount }: HeaderProps) {
                         </Link>
                         <button
                             className="rounded-full p-2 transition-colors hover:bg-gray-100 md:hidden"
-                            onClick={() => router.push('/profile')}
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             {mobileMenuOpen ? (
                                 <X className="h-6 w-6" />

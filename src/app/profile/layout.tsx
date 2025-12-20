@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/use-user'
 import { Loader2 } from 'lucide-react'
@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react'
 export default function ProfileLayout({
     children,
 }: {
-    children: React.ReactNode
+    children: ReactNode
 }) {
     const router = useRouter()
     const { currentUser, loading } = useUser()
