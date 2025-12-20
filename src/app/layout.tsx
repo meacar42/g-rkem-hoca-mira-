@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
     children,
 }: Readonly<{
-    children: React.ReactNode
+    children: ReactNode
 }>) {
     // Server-side'da şehirleri yükle
     let cities = [] as Awaited<ReturnType<typeof getCitiesAPI>>
