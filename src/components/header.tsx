@@ -1,21 +1,15 @@
 'use client'
-import { useState, useEffect } from 'react'
-import {
-    ShoppingCart,
-    User as UserIcon,
-    Menu,
-    X,
-    Glasses,
-    LogOut,
-} from 'lucide-react'
+import { useState } from 'react'
+import { ShoppingCart, User as UserIcon, Menu, X, Glasses } from 'lucide-react'
 import Link from 'next/link'
-import { useUser } from '@/hooks/use-user'
+import { useCart } from '@/contexts/cart-context'
 
-interface HeaderProps {
-    cartItemCount: number
-}
-
-export default function Header({ cartItemCount }: HeaderProps) {
+export default function Header() {
+    const { cart } = useCart()
+    const cartItemCount = cart.items.reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+    )
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const navigation = [

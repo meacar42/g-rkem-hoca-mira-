@@ -49,7 +49,7 @@ export default async function RootLayout({
                 <UserProvider currentUser={null}>
                     <CartProvider isLoggedIn={false}>
                         <LocationProvider initialCities={cities}>
-                            <Header cartItemCount={0} />
+                            <Header />
                             <ToastContainer
                                 position="bottom-right"
                                 autoClose={1000}
