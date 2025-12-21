@@ -64,6 +64,10 @@
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
     }
+
+    #checkoutform-box {
+        width: 1000px !important;
+    }
 }
 
 @layer base {
@@ -73,6 +77,8 @@
     body {
         @apply bg-background text-foreground;
     }
+
+
 }
 
 @layer utilities {

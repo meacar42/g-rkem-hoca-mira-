@@ -8,6 +8,12 @@ const nextConfig = {
             },
         ],
     },
+    webpack: (config, { isServer }) => {
+        if (isServer) {
+            config.externals.push('iyzipay')
+        }
+        return config
+    },
 }
 
 export default nextConfig

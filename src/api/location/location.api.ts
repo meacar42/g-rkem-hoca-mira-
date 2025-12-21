@@ -24,7 +24,7 @@ export async function getDistrictsByCityAPI(
     cityId: number,
 ): Promise<IDistrict[]> {
     return fetchPublicAPI<IDistrict[]>(
-        process.env.NEXT_PUBLIC_BACKEND_API_URL + `districts?city=${cityId}`,
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + `/districts?city=${cityId}`,
         {
             method: 'GET',
         },
