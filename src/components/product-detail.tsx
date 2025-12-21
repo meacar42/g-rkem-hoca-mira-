@@ -25,6 +25,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/thumbs'
 import 'swiper/css/free-mode'
+import { useCart } from '@/contexts/cart-context'
 
 export default function ProductDetail({ id }: { id: number }) {
     const [product, setProduct] = useState<IProduct | null>(null)
@@ -50,6 +51,8 @@ export default function ProductDetail({ id }: { id: number }) {
         )
     }
 
+    const { addToCart } = useCart()
+
     return (
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -58,7 +61,7 @@ export default function ProductDetail({ id }: { id: number }) {
                     className="mb-8 inline-flex items-center text-emerald-500 hover:text-emerald-600"
                 >
                     <ChevronLeft className="h-5 w-5" />
-                    <span>Back</span>
+                    <span>Önceki Sayfa</span>
                 </Link>
 
                 <div className="overflow-hidden rounded-lg bg-white shadow-lg">
@@ -279,7 +282,11 @@ export default function ProductDetail({ id }: { id: number }) {
                             </div>
 
                             <Button
-                                onClick={() => {}}
+                                onClick={() => {
+                                    if (product.stockQuantity > 0) {
+                                        addToCart(product.id, quantity)
+                                    }
+                                }}
                                 disabled={product.stockQuantity === 0}
                                 className="mb-4 w-full"
                                 size="lg"

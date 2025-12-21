@@ -16,6 +16,8 @@ import {
     removeItem,
     updateItem,
 } from '@/api/cart/cart.api'
+import { toast } from 'react-toastify'
+import { ShoppingCart } from 'lucide-react'
 
 interface CartContextType {
     cart: Cart
@@ -99,6 +101,10 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
                 const updatedCart = cartStorage.addItem(productId, quantity)
                 setCart(updatedCart)
             }
+            toast('Ürün sepetinize eklendi', {
+                type: 'success',
+                icon: <ShoppingCart size={16} color={'#000'} />,
+            })
         } catch (error) {
             console.error('Failed to add to cart:', error)
             throw error

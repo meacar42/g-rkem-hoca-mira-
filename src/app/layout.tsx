@@ -8,7 +8,8 @@ import { LocationProvider } from '@/contexts/location-context'
 import { getCitiesAPI } from '@/api/location/location.api'
 import Footer from '@/components/footer'
 import { CartProvider } from '@/contexts/cart-context'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
+import { ToastContainer } from 'react-toastify'
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -49,6 +50,10 @@ export default async function RootLayout({
                     <CartProvider isLoggedIn={false}>
                         <LocationProvider initialCities={cities}>
                             <Header cartItemCount={0} />
+                            <ToastContainer
+                                position="bottom-right"
+                                autoClose={1000}
+                            />
                             {children}
                             <Footer />
                         </LocationProvider>
