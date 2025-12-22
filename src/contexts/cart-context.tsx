@@ -7,7 +7,7 @@ import {
     useEffect,
     ReactNode,
 } from 'react'
-import { Cart } from '@/types/ICartItem'
+import { Cart, CartItemProduct } from '@/types/ICartItem'
 import { cartStorage } from '@/lib/cart-storage'
 import {
     addItem,
@@ -22,7 +22,11 @@ import { ShoppingCart } from 'lucide-react'
 interface CartContextType {
     cart: Cart
     isLoading: boolean
-    addToCart: (productId: number, quantity: number) => Promise<void>
+    addToCart: (
+        productId: number,
+        quantity: number,
+        product?: CartItemProduct,
+    ) => Promise<void>
     updateCartItem: (
         itemIdOrProductId: number,
         quantity: number,
@@ -91,14 +95,22 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
         }
     }
 
-    const addToCart = async (productId: number, quantity: number) => {
+    const addToCart = async (
+        productId: number,
+        quantity: number,
+        product?: CartItemProduct,
+    ) => {
         setIsLoading(true)
         try {
             if (isLoggedIn) {
                 const updatedCart = await addItem(productId, quantity)
                 setCart(updatedCart)
             } else {
-                const updatedCart = cartStorage.addItem(productId, quantity)
+                const updatedCart = cartStorage.addItem(
+                    productId,
+                    quantity,
+                    product,
+                )
                 setCart(updatedCart)
             }
             toast('Ürün sepetinize eklendi', {

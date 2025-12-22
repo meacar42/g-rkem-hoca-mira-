@@ -110,6 +110,11 @@ export interface ICreateOrderRequestPayload {
     }
 
     billingAddressSameAsShipping: boolean
+
+    products: {
+        productId: number
+        quantity: number
+    }[]
 }
 
 // Sipariş talebi oluşturma yanıtı

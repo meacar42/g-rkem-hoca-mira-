@@ -1,21 +1,23 @@
 import { useCart } from '@/contexts/cart-context'
+import { CartItemProduct } from '@/types/ICartItem'
 
 export function AddToCartButton({
     productId,
     quantity = 1,
+    product,
 }: {
     productId: number | string
     quantity?: number
+    product?: CartItemProduct
 }) {
     const { addToCart, isLoading } = useCart()
 
     const handleClick = async () => {
         try {
-            if (typeof productId === 'string') {
-                productId = parseInt(productId)
-            }
+            const id =
+                typeof productId === 'string' ? parseInt(productId) : productId
 
-            await addToCart(productId, quantity)
+            await addToCart(id, quantity, product)
             alert('Ürün sepete eklendi!')
         } catch {
             alert('Hata oluştu')

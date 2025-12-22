@@ -1,4 +1,4 @@
-import { Cart } from '@/types/ICartItem'
+import { Cart, CartItemProduct } from '@/types/ICartItem'
 
 const CART_KEY = 'guest-cart'
 
@@ -24,7 +24,11 @@ export const cartStorage = {
         localStorage.removeItem(CART_KEY)
     },
 
-    addItem(productId: number, quantity: number): Cart {
+    addItem(
+        productId: number,
+        quantity: number,
+        product?: CartItemProduct,
+    ): Cart {
         const cart = this.getCart()
         const existingItem = cart.items.find(
             (item) => item.productId === productId,
@@ -32,8 +36,12 @@ export const cartStorage = {
 
         if (existingItem) {
             existingItem.quantity += quantity
+            // Ürün bilgisi varsa güncelle
+            if (product) {
+                existingItem.product = product
+            }
         } else {
-            cart.items.push({ productId, quantity })
+            cart.items.push({ productId, quantity, product })
         }
 
         this.saveCart(cart)

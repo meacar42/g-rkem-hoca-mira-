@@ -259,7 +259,15 @@ export default function CatalogPage() {
                                         key={product.id}
                                         product={product}
                                         onAddToCart={() =>
-                                            addToCart(product.id, 1)
+                                            addToCart(product.id, 1, {
+                                                id: product.id,
+                                                name: product.name,
+                                                price: product.price,
+                                                discount: product.discount,
+                                                imageUrl: product.images?.[0],
+                                                stockQuantity:
+                                                    product.stockQuantity,
+                                            })
                                         }
                                     />
                                 ))}

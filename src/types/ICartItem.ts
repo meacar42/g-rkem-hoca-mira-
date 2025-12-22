@@ -1,16 +1,18 @@
+export interface CartItemProduct {
+    id: number
+    name: string
+    price: number
+    discount?: number
+    imageUrl?: string
+    stockQuantity: number
+    isActive?: boolean
+}
+
 export interface CartItem {
     id?: number
     productId: number
     quantity: number
-    product?: {
-        id: number
-        name: string
-        price: number
-        discount?: number
-        imageUrl?: string
-        stockQuantity: number
-        isActive: boolean
-    }
+    product?: CartItemProduct
 }
 
 export interface Cart {

@@ -284,7 +284,15 @@ export default function ProductDetail({ id }: { id: number }) {
                             <Button
                                 onClick={() => {
                                     if (product.stockQuantity > 0) {
-                                        addToCart(product.id, quantity)
+                                        addToCart(product.id, quantity, {
+                                            id: product.id,
+                                            name: product.name,
+                                            price: product.price,
+                                            discount: product.discount,
+                                            imageUrl: product.images?.[0],
+                                            stockQuantity:
+                                                product.stockQuantity,
+                                        })
                                     }
                                 }}
                                 disabled={product.stockQuantity === 0}

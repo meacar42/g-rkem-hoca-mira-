@@ -31,10 +31,6 @@ import { useLocation } from '@/contexts/location-context'
 
 import { getProductDetailAPI } from '@/api/product/product.api'
 import { getAddressesAPI, IAddress } from '@/api/address/addresses.api'
-import {
-    createOrderRequestAPI,
-    createGuestOrderRequestAPI,
-} from '@/api/checkout/checkout.api'
 
 import { IProduct } from '@/types/IProduct'
 import { ICreateOrderRequestPayload } from '@/types/IOrderRequest'
@@ -50,6 +46,7 @@ import {
     CartItemWithProduct,
     OrderSummary,
 } from './components'
+import { handlePaymentAction } from '@/app/test/actions'
 
 // Sabitler
 const FREE_SHIPPING_THRESHOLD = 500
@@ -121,6 +118,45 @@ export default function CartPage() {
     // Checkout state
     const [isCheckingOut, setIsCheckingOut] = useState(false)
 
+    const [checkoutHtml, setCheckoutHtml] = useState<string | null>(null)
+
+    const startPayment = async (payload: ICreateOrderRequestPayload) => {
+        try {
+            const result = await handlePaymentAction(payload)
+            console.log(result.data)
+            setCheckoutHtml(result.data.checkoutFormContent)
+        } catch (e) {
+            console.error(e)
+        } finally {
+        }
+    }
+
+    useEffect(() => {
+        if (!checkoutHtml) return
+
+        const container = document.getElementById('iyzipay-checkout-form')
+
+        if (!container) return
+
+        container.innerHTML = checkoutHtml
+
+        // ⚠️ Script'leri manuel çalıştır
+        const scripts = container.getElementsByTagName('script')
+
+        for (let i = 0; i < scripts.length; i++) {
+            const script = document.createElement('script')
+            script.type = 'text/javascript'
+
+            if (scripts[i].src) {
+                script.src = scripts[i].src
+            } else {
+                script.innerHTML = scripts[i].innerHTML
+            }
+
+            document.body.appendChild(script)
+        }
+    }, [checkoutHtml])
+
     // Giriş yapmış kullanıcının bilgilerini doldur
     useEffect(() => {
         if (isLoggedIn && currentUser) {
@@ -134,6 +170,7 @@ export default function CartPage() {
     }, [isLoggedIn, currentUser])
 
     // Sepetteki ürünlerin detaylarını çek
+    // Sadece product bilgisi olmayan ürünler için API çağrısı yap
     useEffect(() => {
         async function fetchProductDetails() {
             if (cart.items.length === 0) {
@@ -142,31 +179,66 @@ export default function CartPage() {
                 return
             }
 
+            // Önce product bilgisi olan itemları hemen dönüştür
+            const itemsNeedingFetch = cart.items.filter((item) => !item.product)
+
+            // Hiç API çağrısı gerekmiyorsa, direkt dönüştür
+            if (itemsNeedingFetch.length === 0) {
+                const itemsWithProducts = cart.items.map((item) => ({
+                    ...item,
+                    productDetails: {
+                        id: item.product!.id,
+                        name: item.product!.name,
+                        price: item.product!.price,
+                        discount: item.product!.discount,
+                        images: item.product!.imageUrl
+                            ? [item.product!.imageUrl]
+                            : [],
+                        stockQuantity: item.product!.stockQuantity,
+                    } as IProduct,
+                }))
+                setCartItemsWithProducts(itemsWithProducts)
+                setIsLoadingProducts(false)
+                return
+            }
+
             setIsLoadingProducts(true)
             try {
-                const itemsWithProducts = await Promise.all(
-                    cart.items.map(async (item) => {
-                        if (item.product) {
-                            return {
-                                ...item,
-                                productDetails: {
-                                    id: item.product.id,
-                                    name: item.product.name,
-                                    price: item.product.price,
-                                    discount: item.product.discount,
-                                    images: item.product.imageUrl
-                                        ? [item.product.imageUrl]
-                                        : [],
-                                    stockQuantity: item.product.stockQuantity,
-                                } as IProduct,
-                            }
-                        }
-                        const productDetails = await getProductDetailAPI(
-                            item.productId,
-                        )
-                        return { ...item, productDetails }
-                    }),
+                // Sadece eksik ürünler için API çağrısı yap
+                const fetchedProducts = await Promise.all(
+                    itemsNeedingFetch.map((item) =>
+                        getProductDetailAPI(item.productId),
+                    ),
                 )
+
+                // ProductId -> IProduct map oluştur
+                const productMap = new Map<number, IProduct>()
+                itemsNeedingFetch.forEach((item, index) => {
+                    productMap.set(item.productId, fetchedProducts[index])
+                })
+
+                // Tüm itemları birleştir
+                const itemsWithProducts = cart.items.map((item) => {
+                    if (item.product) {
+                        return {
+                            ...item,
+                            productDetails: {
+                                id: item.product.id,
+                                name: item.product.name,
+                                price: item.product.price,
+                                discount: item.product.discount,
+                                images: item.product.imageUrl
+                                    ? [item.product.imageUrl]
+                                    : [],
+                                stockQuantity: item.product.stockQuantity,
+                            } as IProduct,
+                        }
+                    }
+                    return {
+                        ...item,
+                        productDetails: productMap.get(item.productId),
+                    }
+                })
                 setCartItemsWithProducts(itemsWithProducts)
             } catch (error) {
                 console.error('Ürün detayları yüklenirken hata:', error)
@@ -377,13 +449,23 @@ export default function CartPage() {
                 }
             }
 
-            const response = isLoggedIn
-                ? await createOrderRequestAPI(orderRequest)
-                : await createGuestOrderRequestAPI(orderRequest)
+            orderRequest.products = cart.items.map((item) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+            }))
 
-            toast.success('Sipariş talebiniz başarıyla oluşturuldu!')
-            await clearCart()
-            router.push(`/order-request/${response.orderRequest.id}`)
+            console.log('Oluşturulan Sipariş Talebi:', orderRequest)
+
+            await startPayment(orderRequest)
+
+            //
+            // const response = isLoggedIn
+            //     ? await createOrderRequestAPI(orderRequest)
+            //     : await createGuestOrderRequestAPI(orderRequest)
+            //
+            // toast.success('Sipariş talebiniz başarıyla oluşturuldu!')
+            // await clearCart()
+            // router.push(`/order-request/${response.orderRequest.id}`)
         } catch (error: unknown) {
             console.error('Sipariş oluşturulurken hata:', error)
             const errorMessage =
@@ -396,7 +478,7 @@ export default function CartPage() {
         }
     }, [
         isFormValid,
-        cart.items.length,
+        cart.items,
         isLoggedIn,
         currentUser,
         contactInfo,
@@ -405,8 +487,6 @@ export default function CartPage() {
         billingAddressSameAsShipping,
         shippingAddress,
         billingAddress,
-        clearCart,
-        router,
     ])
 
     // Loading durumu
@@ -644,6 +724,9 @@ export default function CartPage() {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="w-[500px]">
+                <div id="iyzipay-checkout-form" className="popup !w-[500px]" />
             </div>
         </div>
     )
