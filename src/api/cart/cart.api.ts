@@ -1,9 +1,11 @@
 import { fetchAuthAPI } from '@/api/fetch.auth.api'
-import { Cart } from '@/types/ICartItem'
+import { fetchPublicAPI } from '@/api/fetch.public.api'
+import { Cart, LocalCartItem, GuestCartInfoResponse } from '@/types/ICartItem'
 
 const API_BASE = '/api/cart'
 
-export async function getCart() {
+// Giriş yapmış kullanıcı için cart işlemleri
+export async function getCart(): Promise<Cart> {
     return fetchAuthAPI<Cart>(API_BASE)
 }
 
@@ -46,4 +48,17 @@ export async function mergeCart(
         method: 'POST',
         body: JSON.stringify({ items }),
     })
+}
+
+// Misafir kullanıcı için cart bilgisi alma (public endpoint)
+export async function getGuestCartInfo(
+    items: LocalCartItem[],
+): Promise<GuestCartInfoResponse> {
+    return fetchPublicAPI<GuestCartInfoResponse>(
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/cart/guest/info',
+        {
+            method: 'POST',
+            body: JSON.stringify({ products: items }),
+        },
+    )
 }

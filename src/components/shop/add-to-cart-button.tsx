@@ -1,14 +1,11 @@
 import { useCart } from '@/contexts/cart-context'
-import { CartItemProduct } from '@/types/ICartItem'
 
 export function AddToCartButton({
     productId,
     quantity = 1,
-    product,
 }: {
     productId: number | string
     quantity?: number
-    product?: CartItemProduct
 }) {
     const { addToCart, isLoading } = useCart()
 
@@ -17,8 +14,7 @@ export function AddToCartButton({
             const id =
                 typeof productId === 'string' ? parseInt(productId) : productId
 
-            await addToCart(id, quantity, product)
-            alert('Ürün sepete eklendi!')
+            await addToCart(id, quantity)
         } catch {
             alert('Hata oluştu')
         }

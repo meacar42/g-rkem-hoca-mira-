@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { useCart } from '@/contexts/cart-context'
 
 export default function Header() {
-    const { cart } = useCart()
-    const cartItemCount = cart.items.reduce(
+    const { localCart } = useCart()
+    const cartItemCount = localCart.items.reduce(
         (sum, item) => sum + item.quantity,
         0,
     )

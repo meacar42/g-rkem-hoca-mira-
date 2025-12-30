@@ -15,21 +15,16 @@ import {
 } from '@/components/ui/item'
 import { Separator } from '@/components/ui/separator'
 import { ButtonGroup } from '@/components/ui/button-group'
-import { IProduct } from '@/types/IProduct'
 import { CartItem } from '@/types/ICartItem'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import Image from 'next/image'
 
-export interface CartItemWithProduct extends CartItem {
-    productDetails?: IProduct
-}
-
 interface CartItemListProps {
-    items: CartItemWithProduct[]
+    items: CartItem[]
     isLoading: boolean
-    onUpdateQuantity: (item: CartItemWithProduct, quantity: number) => void
-    onRemove: (item: CartItemWithProduct) => void
-    getItemPrice: (item: CartItemWithProduct) => number
+    onUpdateQuantity: (item: CartItem, quantity: number) => void
+    onRemove: (item: CartItem) => void
+    getItemPrice: (item: CartItem) => number
 }
 
 function CartItemList({
@@ -39,24 +34,23 @@ function CartItemList({
     onRemove,
     getItemPrice,
 }: CartItemListProps) {
-    const imageUrl = (product: IProduct | undefined) => {
-        if (!product || product.images.length === 0) {
+    const imageUrl = (item: CartItem) => {
+        if (!item.product || item.product.images?.length === 0) {
             return '/placeholder-image.png'
         }
-        return process.env.NEXT_PUBLIC_STORAGE_URL + product.images[0]
+        return process.env.NEXT_PUBLIC_STORAGE_URL + item.product.images[0]
     }
 
     return (
         <Card className="overflow-hidden p-0">
             <ItemGroup>
                 {items.map((item, index) => {
-                    const product = item.productDetails
-                    const itemPrice = getItemPrice(item)
-                    const hasDiscount =
-                        product?.discount && product.discount > 0
+                    const product = item.product
+                    const hasDiscount = product?.discount && product.discount > 0
+                    const maxStock = product?.stockQuantity || 99
 
                     return (
-                        <div key={item.id || item.productId}>
+                        <div key={item.productId}>
                             <Item size="default" className="p-6">
                                 <ItemMedia variant="image">
                                     <AspectRatio
@@ -64,8 +58,8 @@ function CartItemList({
                                         className="rounded-lg bg-muted"
                                     >
                                         <Image
-                                            src={imageUrl(product)}
-                                            alt="Photo by Drew Beamer"
+                                            src={imageUrl(item)}
+                                            alt={product?.name || 'Ürün'}
                                             fill
                                             className="h-full w-full rounded-lg object-cover dark:brightness-[0.2] dark:grayscale"
                                         />
@@ -77,15 +71,11 @@ function CartItemList({
                                         {product?.name || 'Ürün yükleniyor...'}
                                     </ItemTitle>
                                     <ItemDescription>
-                                        {product?.description?.slice(0, 100) ||
-                                            (product?.brand?.name &&
-                                            product?.model?.name
-                                                ? `${product.brand.name} - ${product.model.name}`
-                                                : '')}
+                                        {product?.description?.slice(0, 100)}
                                     </ItemDescription>
                                     <div className="mt-2 flex items-center gap-2">
                                         <span className="text-lg font-semibold text-emerald-600">
-                                            {itemPrice.toLocaleString('tr-TR')}{' '}
+                                            {getItemPrice(item).toLocaleString('tr-TR')}{' '}
                                             TL
                                         </span>
                                         {hasDiscount && (
@@ -119,14 +109,15 @@ function CartItemList({
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() =>
+                                            onClick={() => {
                                                 onUpdateQuantity(
                                                     item,
                                                     item.quantity - 1,
                                                 )
-                                            }
+                                            }}
                                             disabled={
-                                                isLoading || item.quantity <= 1
+                                                isLoading ||
+                                                item.quantity <= 1
                                             }
                                         >
                                             <Minus className="h-4 w-4" />
@@ -149,21 +140,17 @@ function CartItemList({
                                             }
                                             disabled={
                                                 isLoading ||
-                                                item.quantity >=
-                                                    (product?.stockQuantity ||
-                                                        99)
+                                                item.quantity >= maxStock
                                             }
                                         >
                                             <Plus className="h-4 w-4" />
                                         </Button>
                                     </ButtonGroup>
-                                    {product?.stockQuantity &&
-                                        product.stockQuantity <= 5 && (
-                                            <span className="text-xs text-orange-600">
-                                                Son {product.stockQuantity}{' '}
-                                                adet!
-                                            </span>
-                                        )}
+                                    {maxStock <= 5 && (
+                                        <span className="text-xs text-orange-600">
+                                            Son {maxStock} adet!
+                                        </span>
+                                    )}
                                 </ItemActions>
                             </Item>
                             {index < items.length - 1 && <Separator />}

@@ -7,6 +7,5 @@ export { default as GuestAddressForm } from './GuestAddressForm'
 export type { GuestAddress } from './GuestAddressForm'
 
 export { default as CartItemList } from './CartItemList'
-export type { CartItemWithProduct } from './CartItemList'
 
 export { default as OrderSummary } from './OrderSummary'

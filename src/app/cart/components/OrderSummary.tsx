@@ -9,10 +9,7 @@ import { Separator } from '@/components/ui/separator'
 interface OrderSummaryProps {
     subtotal: number
     shipping: number
-    tax: number
     total: number
-    taxRate: number
-    freeShippingThreshold: number
     isValid: boolean
     isLoading: boolean
     isCheckingOut: boolean
@@ -22,28 +19,34 @@ interface OrderSummaryProps {
 function OrderSummary({
     subtotal,
     shipping,
-    tax,
     total,
-    taxRate,
-    freeShippingThreshold,
     isValid,
     isLoading,
     isCheckingOut,
     onCheckout,
 }: OrderSummaryProps) {
-    const formatPrice = (price: number) =>
-        price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    const formatPrice = (price: number) => {
+        console.log('Formatting price:', price)
+        return price.toLocaleString('tr-TR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })
+    }
 
     return (
         <Card>
             <div className="px-6">
-                <h2 className="text-xl font-semibold text-foreground">Sipariş Özeti</h2>
+                <h2 className="text-xl font-semibold text-foreground">
+                    Sipariş Özeti
+                </h2>
             </div>
 
             <div className="space-y-4 px-6">
                 <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Ara Toplam</span>
-                    <span className="font-medium text-foreground">{formatPrice(subtotal)} TL</span>
+                    <span className="font-medium text-foreground">
+                        {formatPrice(subtotal)} TL
+                    </span>
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
@@ -52,31 +55,17 @@ function OrderSummary({
                         {shipping === 0 ? (
                             <span className="text-emerald-600">Ücretsiz</span>
                         ) : (
-                            `${shipping.toLocaleString('tr-TR')} TL`
+                            `${formatPrice(shipping)} TL`
                         )}
                     </span>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">KDV (%{taxRate * 100})</span>
-                    <span className="font-medium text-foreground">{formatPrice(tax)} TL</span>
-                </div>
-
-                {shipping > 0 && (
-                    <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
-                        <p className="text-xs text-emerald-700">
-                            <span className="font-medium">
-                                {(freeShippingThreshold - subtotal).toLocaleString('tr-TR')} TL
-                            </span>{' '}
-                            daha alışveriş yapın, kargo ücretsiz!
-                        </p>
-                    </div>
-                )}
-
                 <Separator />
 
                 <div className="flex items-center justify-between">
-                    <span className="text-base font-semibold text-foreground">Toplam</span>
+                    <span className="text-base font-semibold text-foreground">
+                        Toplam
+                    </span>
                     <span className="text-xl font-bold text-emerald-600">
                         {formatPrice(total)} TL
                     </span>
@@ -116,4 +105,13 @@ function OrderSummary({
     )
 }
 
-export default memo(OrderSummary)
+export default memo(OrderSummary, (prevProps, nextProps) => {
+    return (
+        prevProps.subtotal === nextProps.subtotal &&
+        prevProps.shipping === nextProps.shipping &&
+        prevProps.total === nextProps.total &&
+        prevProps.isValid === nextProps.isValid &&
+        prevProps.isLoading === nextProps.isLoading &&
+        prevProps.isCheckingOut === nextProps.isCheckingOut
+    )
+})

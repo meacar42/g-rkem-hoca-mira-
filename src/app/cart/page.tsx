@@ -1,8 +1,11 @@
-import { getCitiesWithDistrictsAPI } from '@/api/info/info.api'
+import { getCitiesWithDistrictsAPI, getInfoAPI } from '@/api/info/info.api'
 import CartClient from './CartClient'
 
 export default async function CartPage() {
-    let cities = await getCitiesWithDistrictsAPI()
+    const [cities, info] = await Promise.all([
+        getCitiesWithDistrictsAPI(),
+        getInfoAPI(),
+    ])
 
-    return <CartClient cities={cities} />
+    return <CartClient cities={cities} info={info} />
 }

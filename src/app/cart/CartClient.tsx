@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import {
     ArrowLeft,
     ShoppingCart,
@@ -28,12 +27,11 @@ import {
 import { useCart } from '@/contexts/cart-context'
 import { useUser } from '@/hooks/use-user'
 
-import { getProductDetailAPI } from '@/api/product/product.api'
 import { getAddressesAPI, IAddress } from '@/api/address/addresses.api'
 
-import { IProduct } from '@/types/IProduct'
 import { ICreateOrderRequestPayload } from '@/types/IOrderRequest'
-import { ICity } from '@/api/info/info.api'
+import { ICity, IInfo } from '@/api/info/info.api'
+import { CartItem } from '@/types/ICartItem'
 
 import {
     ContactInfoSection,
@@ -42,15 +40,9 @@ import {
     GuestAddressForm,
     GuestAddress,
     CartItemList,
-    CartItemWithProduct,
     OrderSummary,
 } from './components'
 import { handlePaymentAction } from '@/app/test/actions'
-
-// Sabitler
-const FREE_SHIPPING_THRESHOLD = 500
-const SHIPPING_COST = 50
-const TAX_RATE = 0.2
 
 // Validasyon fonksiyonları
 const isPhoneValid = (phone: string) => phone.replace(/\D/g, '').length >= 10
@@ -58,24 +50,20 @@ const isEmailValid = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
 interface CartClientProps {
     cities: ICity[]
+    info: IInfo
 }
 
-export default function CartClient({ cities }: CartClientProps) {
-    const router = useRouter()
+export default function CartClient({ cities, info }: CartClientProps) {
     const {
         cart,
         updateCartItem,
         removeFromCart,
-        clearCart,
+        loadFullCart,
         isLoading: cartLoading,
+        isCartLoading,
     } = useCart()
-    const { currentUser, isLoggedIn, loading: userLoading } = useUser()
 
-    // Ürün state'leri
-    const [cartItemsWithProducts, setCartItemsWithProducts] = useState<
-        CartItemWithProduct[]
-    >([])
-    const [isLoadingProducts, setIsLoadingProducts] = useState(true)
+    const { currentUser, isLoggedIn, loading: userLoading } = useUser()
 
     // İletişim bilgileri (hem giriş yapmış hem misafir için)
     const [contactInfo, setContactInfo] = useState<ContactInfo>({
@@ -116,6 +104,15 @@ export default function CartClient({ cities }: CartClientProps) {
 
     const [checkoutHtml, setCheckoutHtml] = useState<string | null>(null)
 
+    // Cart sayfası açıldığında full cart bilgisini yükle
+    useEffect(() => {
+        loadFullCart()
+    }, [loadFullCart])
+
+    useEffect(() => {
+        console.log('Cart güncellendi:', cart)
+    }, [cart])
+
     const startPayment = async (payload: ICreateOrderRequestPayload) => {
         try {
             const result = await handlePaymentAction(payload)
@@ -123,7 +120,6 @@ export default function CartClient({ cities }: CartClientProps) {
             setCheckoutHtml(result.data.checkoutFormContent)
         } catch (e) {
             console.error(e)
-        } finally {
         }
     }
 
@@ -165,87 +161,6 @@ export default function CartClient({ cities }: CartClientProps) {
         }
     }, [isLoggedIn, currentUser])
 
-    // Sepetteki ürünlerin detaylarını çek
-    // Sadece product bilgisi olmayan ürünler için API çağrısı yap
-    useEffect(() => {
-        async function fetchProductDetails() {
-            if (cart.items.length === 0) {
-                setCartItemsWithProducts([])
-                setIsLoadingProducts(false)
-                return
-            }
-
-            // Önce product bilgisi olan itemları hemen dönüştür
-            const itemsNeedingFetch = cart.items.filter((item) => !item.product)
-
-            // Hiç API çağrısı gerekmiyorsa, direkt dönüştür
-            if (itemsNeedingFetch.length === 0) {
-                const itemsWithProducts = cart.items.map((item) => ({
-                    ...item,
-                    productDetails: {
-                        id: item.product!.id,
-                        name: item.product!.name,
-                        price: item.product!.price,
-                        discount: item.product!.discount,
-                        images: item.product!.imageUrl
-                            ? [item.product!.imageUrl]
-                            : [],
-                        stockQuantity: item.product!.stockQuantity,
-                    } as IProduct,
-                }))
-                setCartItemsWithProducts(itemsWithProducts)
-                setIsLoadingProducts(false)
-                return
-            }
-
-            setIsLoadingProducts(true)
-            try {
-                // Sadece eksik ürünler için API çağrısı yap
-                const fetchedProducts = await Promise.all(
-                    itemsNeedingFetch.map((item) =>
-                        getProductDetailAPI(item.productId),
-                    ),
-                )
-
-                // ProductId -> IProduct map oluştur
-                const productMap = new Map<number, IProduct>()
-                itemsNeedingFetch.forEach((item, index) => {
-                    productMap.set(item.productId, fetchedProducts[index])
-                })
-
-                // Tüm itemları birleştir
-                const itemsWithProducts = cart.items.map((item) => {
-                    if (item.product) {
-                        return {
-                            ...item,
-                            productDetails: {
-                                id: item.product.id,
-                                name: item.product.name,
-                                price: item.product.price,
-                                discount: item.product.discount,
-                                images: item.product.imageUrl
-                                    ? [item.product.imageUrl]
-                                    : [],
-                                stockQuantity: item.product.stockQuantity,
-                            } as IProduct,
-                        }
-                    }
-                    return {
-                        ...item,
-                        productDetails: productMap.get(item.productId),
-                    }
-                })
-                setCartItemsWithProducts(itemsWithProducts)
-            } catch (error) {
-                console.error('Ürün detayları yüklenirken hata:', error)
-            } finally {
-                setIsLoadingProducts(false)
-            }
-        }
-
-        fetchProductDetails()
-    }, [cart.items])
-
     // Giriş yapmış kullanıcının adreslerini çek
     useEffect(() => {
         async function fetchUserAddresses() {
@@ -271,44 +186,45 @@ export default function CartClient({ cities }: CartClientProps) {
     }, [isLoggedIn, userLoading])
 
     // Fiyat hesaplama
-    const getItemPrice = useCallback((item: CartItemWithProduct): number => {
-        if (!item.productDetails) return 0
-        const { price, discount = 0 } = item.productDetails
+    const getItemPrice = useCallback((item: CartItem): number => {
+        if (!item.product) return 0
+        const { price, discount = 0 } = item.product
         return discount > 0 ? price - (price * discount) / 100 : price
     }, [])
 
+    const getCartSubTotal = useCallback((): number => {
+        if (!cart) return 0
+        return cart.products.reduce((total, item) => {
+            return total + getItemPrice(item) * item.quantity
+        }, 0)
+    }, [cart, getItemPrice])
+
+    const subtotal = useMemo(() => getCartSubTotal(), [getCartSubTotal])
+    const shipping = useMemo(
+        () => (subtotal > info.shipmentMinPrice ? 0 : info.shipmentPrice),
+        [subtotal, info.shipmentMinPrice, info.shipmentPrice],
+    )
+    const total = useMemo(() => subtotal + shipping, [subtotal, shipping])
+
     // Miktar güncelleme
     const handleUpdateQuantity = useCallback(
-        async (item: CartItemWithProduct, newQuantity: number) => {
+        async (item: CartItem, newQuantity: number) => {
             if (newQuantity < 1) return
-            const maxStock = item.productDetails?.stockQuantity || 99
+            const maxStock = item.product?.stockQuantity || 99
             if (newQuantity > maxStock) return
 
-            await updateCartItem(item.id || item.productId, newQuantity)
+            await updateCartItem(item.productId, newQuantity)
         },
         [updateCartItem],
     )
 
     // Ürün silme
     const handleRemoveItem = useCallback(
-        async (item: CartItemWithProduct) => {
-            await removeFromCart(item.id || item.productId)
+        async (item: CartItem) => {
+            await removeFromCart(item.productId)
         },
         [removeFromCart],
     )
-
-    // Hesaplamalar (memoized)
-    const { subtotal, shipping, tax, total } = useMemo(() => {
-        const subtotal = cartItemsWithProducts.reduce(
-            (sum, item) => sum + getItemPrice(item) * item.quantity,
-            0,
-        )
-        const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST
-        const tax = subtotal * TAX_RATE
-        const total = subtotal + shipping + tax
-
-        return { subtotal, shipping, tax, total }
-    }, [cartItemsWithProducts, getItemPrice])
 
     // Validasyonlar (memoized)
     const isContactInfoValid = useMemo(
@@ -352,7 +268,7 @@ export default function CartClient({ cities }: CartClientProps) {
 
     // Sipariş talebi oluştur
     const handleCheckout = useCallback(async () => {
-        if (!isFormValid || cart.items.length === 0) return
+        if (!isFormValid || !cart || cart.products.length === 0) return
 
         setIsCheckingOut(true)
 
@@ -398,7 +314,7 @@ export default function CartClient({ cities }: CartClientProps) {
                 }
             }
 
-            orderRequest.products = cart.items.map((item) => ({
+            orderRequest.products = cart.products.map((item) => ({
                 productId: item.productId,
                 quantity: item.quantity,
             }))
@@ -406,15 +322,6 @@ export default function CartClient({ cities }: CartClientProps) {
             console.log('Oluşturulan Sipariş Talebi:', orderRequest)
 
             await startPayment(orderRequest)
-
-            //
-            // const response = isLoggedIn
-            //     ? await createOrderRequestAPI(orderRequest)
-            //     : await createGuestOrderRequestAPI(orderRequest)
-            //
-            // toast.success('Sipariş talebiniz başarıyla oluşturuldu!')
-            // await clearCart()
-            // router.push(`/order-request/${response.orderRequest.id}`)
         } catch (error: unknown) {
             console.error('Sipariş oluşturulurken hata:', error)
             const errorMessage =
@@ -427,7 +334,7 @@ export default function CartClient({ cities }: CartClientProps) {
         }
     }, [
         isFormValid,
-        cart.items,
+        cart,
         isLoggedIn,
         currentUser,
         contactInfo,
@@ -438,8 +345,8 @@ export default function CartClient({ cities }: CartClientProps) {
         billingAddress,
     ])
 
-    // Loading durumu
-    if (isLoadingProducts && cart.items.length > 0) {
+    // Loading durumu (cart yüklenirken)
+    if (isCartLoading || cart === null) {
         return (
             <div className="min-h-screen bg-gray-50">
                 <PageHeader />
@@ -456,7 +363,7 @@ export default function CartClient({ cities }: CartClientProps) {
     }
 
     // Boş sepet durumu
-    if (cart.items.length === 0) {
+    if (cart.products.length === 0) {
         return (
             <div className="min-h-screen bg-gray-50">
                 <PageHeader />
@@ -489,12 +396,7 @@ export default function CartClient({ cities }: CartClientProps) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <PageHeader
-                itemCount={cart.items.reduce(
-                    (sum, item) => sum + item.quantity,
-                    0,
-                )}
-            />
+            {/*<PageHeader itemCount={cart.itemCount} />*/}
 
             <div className="container mx-auto max-w-6xl px-4 py-8">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -502,7 +404,7 @@ export default function CartClient({ cities }: CartClientProps) {
                     <div className="space-y-4 lg:col-span-2">
                         {/* Ürün Listesi */}
                         <CartItemList
-                            items={cartItemsWithProducts}
+                            items={cart.products}
                             isLoading={cartLoading}
                             onUpdateQuantity={handleUpdateQuantity}
                             onRemove={handleRemoveItem}
@@ -641,17 +543,13 @@ export default function CartClient({ cities }: CartClientProps) {
                         </Link>
                     </div>
 
-                    {/* Sağ Taraf - Sipariş Özeti */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-24">
                             <OrderSummary
                                 subtotal={subtotal}
                                 shipping={shipping}
-                                tax={tax}
                                 total={total}
-                                taxRate={TAX_RATE}
-                                freeShippingThreshold={FREE_SHIPPING_THRESHOLD}
-                                isValid={isFormValid}
+                                isValid={true}
                                 isLoading={cartLoading}
                                 isCheckingOut={isCheckingOut}
                                 onCheckout={handleCheckout}

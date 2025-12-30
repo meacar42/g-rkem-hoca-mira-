@@ -1,9 +1,9 @@
-import { Cart, CartItemProduct } from '@/types/ICartItem'
+import { LocalCart, LocalCartItem } from '@/types/ICartItem'
 
 const CART_KEY = 'guest-cart'
 
 export const cartStorage = {
-    getCart(): Cart {
+    getCart(): LocalCart {
         if (typeof window === 'undefined') return { items: [] }
         const stored = localStorage.getItem(CART_KEY)
         if (!stored) return { items: [] }
@@ -14,7 +14,7 @@ export const cartStorage = {
         }
     },
 
-    saveCart(cart: Cart): void {
+    saveCart(cart: LocalCart): void {
         if (typeof window === 'undefined') return
         localStorage.setItem(CART_KEY, JSON.stringify(cart))
     },
@@ -24,11 +24,7 @@ export const cartStorage = {
         localStorage.removeItem(CART_KEY)
     },
 
-    addItem(
-        productId: number,
-        quantity: number,
-        product?: CartItemProduct,
-    ): Cart {
+    addItem(productId: number, quantity: number): LocalCart {
         const cart = this.getCart()
         const existingItem = cart.items.find(
             (item) => item.productId === productId,
@@ -36,19 +32,15 @@ export const cartStorage = {
 
         if (existingItem) {
             existingItem.quantity += quantity
-            // Ürün bilgisi varsa güncelle
-            if (product) {
-                existingItem.product = product
-            }
         } else {
-            cart.items.push({ productId, quantity, product })
+            cart.items.push({ productId, quantity })
         }
 
         this.saveCart(cart)
         return cart
     },
 
-    updateItem(productId: number, quantity: number): Cart {
+    updateItem(productId: number, quantity: number): LocalCart {
         const cart = this.getCart()
         const item = cart.items.find((item) => item.productId === productId)
 
@@ -60,10 +52,14 @@ export const cartStorage = {
         return cart
     },
 
-    removeItem(productId: number): Cart {
+    removeItem(productId: number): LocalCart {
         const cart = this.getCart()
         cart.items = cart.items.filter((item) => item.productId !== productId)
         this.saveCart(cart)
         return cart
+    },
+
+    getItems(): LocalCartItem[] {
+        return this.getCart().items
     },
 }

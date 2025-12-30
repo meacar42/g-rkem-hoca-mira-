@@ -1,24 +1,42 @@
-export interface CartItemProduct {
+// Local storage'da saklanan basit cart item
+export interface LocalCartItem {
+    productId: number
+    quantity: number
+}
+
+// Local storage'daki basit cart
+export interface LocalCart {
+    items: LocalCartItem[]
+}
+
+// Backend'den gelen ürün bilgisi
+export interface CartProduct {
     id: number
     name: string
     price: number
     discount?: number
-    imageUrl?: string
+    images: string[]
     stockQuantity: number
     isActive?: boolean
+    description?: string
 }
 
+// Backend'den gelen cart item (ürün bilgisiyle birlikte)
 export interface CartItem {
     id?: number
     productId: number
     quantity: number
-    product?: CartItemProduct
+    product: CartProduct
 }
 
+// Backend'den gelen tam cart response
 export interface Cart {
     id?: number
-    items: CartItem[]
-    subtotal?: number
-    total?: number
-    itemCount?: number
+    products: CartItem[]
+}
+
+// Guest cart info response (productsNotFound dahil)
+export interface GuestCartInfoResponse {
+    products: CartProduct[]
+    productsNotFound?: number[]
 }
