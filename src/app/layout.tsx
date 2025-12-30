@@ -4,8 +4,6 @@ import './globals.css'
 import Header from '@/components/header'
 
 import { UserProvider } from '@/contexts/user-context'
-import { LocationProvider } from '@/contexts/location-context'
-import { getCitiesAPI } from '@/api/location/location.api'
 import Footer from '@/components/footer'
 import { CartProvider } from '@/contexts/cart-context'
 import React, { ReactNode } from 'react'
@@ -32,15 +30,6 @@ export default async function RootLayout({
 }: Readonly<{
     children: ReactNode
 }>) {
-    // Server-side'da şehirleri yükle
-    let cities = [] as Awaited<ReturnType<typeof getCitiesAPI>>
-    try {
-        cities = await getCitiesAPI()
-    } catch (error) {
-        console.error('Şehirler yüklenirken hata oluştu:', error)
-        cities = []
-    }
-
     return (
         <html lang="en">
             <body
@@ -48,15 +37,13 @@ export default async function RootLayout({
             >
                 <UserProvider currentUser={null}>
                     <CartProvider isLoggedIn={false}>
-                        <LocationProvider initialCities={cities}>
-                            <Header />
-                            <ToastContainer
-                                position="bottom-right"
-                                autoClose={1000}
-                            />
-                            {children}
-                            <Footer />
-                        </LocationProvider>
+                        <Header />
+                        <ToastContainer
+                            position="bottom-right"
+                            autoClose={1000}
+                        />
+                        {children}
+                        <Footer />
                     </CartProvider>
                 </UserProvider>
             </body>

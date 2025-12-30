@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { ICity, IDistrict } from '@/api/location/location.api'
+import { ICity, IDistrict } from '@/api/info/info.api'
 
 export interface GuestAddress {
     cityId: string
@@ -22,9 +22,6 @@ interface GuestAddressFormProps {
     address: GuestAddress
     onChange: (address: GuestAddress) => void
     cities: ICity[]
-    districts: IDistrict[]
-    isLoadingDistricts: boolean
-    onCityChange: (cityId: string) => void
     idPrefix?: string
 }
 
@@ -32,13 +29,18 @@ function GuestAddressForm({
     address,
     onChange,
     cities,
-    districts,
-    isLoadingDistricts,
-    onCityChange,
     idPrefix = '',
 }: GuestAddressFormProps) {
+    const selectedCity = cities.find((c) => c.id.toString() === address.cityId)
+    const districts: IDistrict[] = selectedCity?.districts || []
+
     const handleChange = (field: keyof GuestAddress, value: string) => {
         onChange({ ...address, [field]: value })
+    }
+
+    const handleCityChange = (cityId: string) => {
+        // Şehir değiştiğinde district'i sıfırla
+        onChange({ ...address, cityId, districtId: '' })
     }
 
     return (
@@ -46,7 +48,7 @@ function GuestAddressForm({
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                     <Label htmlFor={`${idPrefix}city`}>Şehir *</Label>
-                    <Select value={address.cityId} onValueChange={onCityChange}>
+                    <Select value={address.cityId} onValueChange={handleCityChange}>
                         <SelectTrigger id={`${idPrefix}city`}>
                             <SelectValue placeholder="Şehir seçin" />
                         </SelectTrigger>
@@ -65,16 +67,12 @@ function GuestAddressForm({
                     <Select
                         value={address.districtId}
                         onValueChange={(value) => handleChange('districtId', value)}
-                        disabled={!address.cityId || isLoadingDistricts}
+                        disabled={!address.cityId}
                     >
                         <SelectTrigger id={`${idPrefix}district`}>
                             <SelectValue
                                 placeholder={
-                                    isLoadingDistricts
-                                        ? 'Yükleniyor...'
-                                        : address.cityId
-                                            ? 'İlçe seçin'
-                                            : 'Önce şehir seçin'
+                                    address.cityId ? 'İlçe seçin' : 'Önce şehir seçin'
                                 }
                             />
                         </SelectTrigger>
