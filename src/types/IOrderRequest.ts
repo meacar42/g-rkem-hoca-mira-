@@ -86,24 +86,20 @@ export interface ICreateOrderRequestPayload {
         phone?: string
     }
     guest?: {
+        id?: number
         email: string
-        name?: string
-        surname?: string
+        name: string
+        surname: string
         phone: string
     }
 
-    // Adres bilgileri (giriş yapmış kullanıcı için ID)
-    shippingAddressId?: number
-    billingAddressId?: number
-
-    // Adres bilgileri (misafir kullanıcı için detay)
-    shippingAddress?: {
+    shippingAddress: {
         cityId: number
         districtId: number
         addressDetail: string
-        phone: string
+        zipCode: string
     }
-    billingAddress?: {
+    billingAddress: {
         cityId: number
         districtId: number
         addressDetail: string

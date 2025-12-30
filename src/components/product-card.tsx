@@ -1,10 +1,11 @@
-import { IProduct, FrameType } from '@/types/IProduct'
+import { IProduct } from '@/types/IProduct'
 import Link from 'next/link'
 import { ShoppingCart, Eye } from 'lucide-react'
 import formatPrice from '@/utils/format-price'
-import { frameTypeLabels } from '@/app/catalog/page'
+
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import Image from 'next/image'
+import { frameTypeLabels } from '@/types/IFrameTypeLabel'
 
 interface ProductCardProps {
     product: IProduct

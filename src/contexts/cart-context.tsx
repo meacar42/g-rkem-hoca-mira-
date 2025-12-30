@@ -25,11 +25,6 @@ import { ShoppingCart } from 'lucide-react'
 // Boş cart için default değerler
 const emptyCart: Cart = {
     products: [],
-    subtotal: 0,
-    shipping: 0,
-    tax: 0,
-    total: 0,
-    itemCount: 0,
 }
 
 interface CartContextType {
@@ -117,8 +112,6 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
                     return
                 }
                 const cartInfo = await getGuestCartInfo(storedCart.items)
-                console.log('Guest cart info:', cartInfo)
-
                 // Bulunamayan ürünleri local storage'dan sil ve kullanıcıya bildir
                 if (
                     cartInfo.productsNotFound &&

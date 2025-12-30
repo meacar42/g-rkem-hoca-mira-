@@ -2,32 +2,14 @@
 import { SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/product-card'
-import { IProduct, FrameType, Gender } from '@/types/IProduct'
+import { IProduct, FrameTypeLabel, Gender } from '@/types/IProduct'
 import { getProductsAPI } from '@/api/product/product.api'
 import { useCart } from '@/contexts/cart-context'
+import { frameTypeLabels, genderLabels } from '@/types/IFrameTypeLabel'
 
 interface FilterOptions {
-    frameType: FrameType | ''
+    frameType: FrameTypeLabel | ''
     gender: Gender | ''
-}
-
-const frameTypeLabels: Record<FrameType, string> = {
-    [FrameType.FULL_RIM]: 'Tam Çerçeve',
-    [FrameType.SEMI_RIMLESS]: 'Yarım Çerçeve',
-    [FrameType.RIMLESS]: 'Çerçevesiz',
-    [FrameType.CATE_EYE]: 'Kedi Gözü',
-    [FrameType.ROUND]: 'Yuvarlak',
-    [FrameType.AVIATOR]: 'Pilot',
-    [FrameType.SQUARE]: 'Kare',
-    [FrameType.RECTANGLE]: 'Dikdörtgen',
-    [FrameType.WAYFARER]: 'Wayfarer',
-    [FrameType.OVERSIZED]: 'Büyük Boy',
-}
-
-const genderLabels: Record<Gender, string> = {
-    [Gender.MALE]: 'Erkek',
-    [Gender.FEMALE]: 'Kadın',
-    [Gender.UNISEX]: 'Unisex',
 }
 
 export default function CatalogPage() {
@@ -59,7 +41,7 @@ export default function CatalogPage() {
         }
     })
 
-    const frameTypes = Object.values(FrameType)
+    const frameTypes = Object.values(FrameTypeLabel)
     const genders = Object.values(Gender)
 
     const clearFilters = () => {
@@ -283,5 +265,3 @@ export default function CatalogPage() {
         </div>
     )
 }
-
-export { frameTypeLabels, genderLabels }

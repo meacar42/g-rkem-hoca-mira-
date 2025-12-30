@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -9,6 +9,14 @@ import { copyToClipboard } from '@/lib/utils'
 import formatPrice from '@/utils/format-price'
 
 export default function CheckoutSuccessPage() {
+    return (
+        <Suspense fallback={<></>}>
+            <CheckoutSuccess />
+        </Suspense>
+    )
+}
+
+function CheckoutSuccess() {
     const router = useRouter()
     const [countdown, setCountdown] = useState(1000)
     const [copied, setCopied] = useState(false)

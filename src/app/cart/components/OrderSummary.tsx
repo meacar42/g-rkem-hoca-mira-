@@ -26,7 +26,6 @@ function OrderSummary({
     onCheckout,
 }: OrderSummaryProps) {
     const formatPrice = (price: number) => {
-        console.log('Formatting price:', price)
         return price.toLocaleString('tr-TR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,

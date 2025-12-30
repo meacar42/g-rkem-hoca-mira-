@@ -1,3 +1,4 @@
+'use server'
 import { getCitiesWithDistrictsAPI, getInfoAPI } from '@/api/info/info.api'
 import CartClient from './CartClient'
 

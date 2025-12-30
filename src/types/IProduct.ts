@@ -14,7 +14,7 @@ export interface IProduct {
     model: IModel
     gender: Gender
     images: string[]
-    frameType: FrameType // frame_type
+    frameType: FrameTypeLabel // frame_type
     material?: string // frame_material
     color?: string // frame_color
     lensWidth?: string // lens_width
@@ -29,7 +29,7 @@ export enum Gender {
     UNISEX = 'unisex',
 }
 
-export enum FrameType {
+export enum FrameTypeLabel {
     FULL_RIM = 'full_rim',
     SEMI_RIMLESS = 'semi_rimless',
     RIMLESS = 'rimless',

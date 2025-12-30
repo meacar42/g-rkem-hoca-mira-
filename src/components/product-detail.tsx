@@ -13,8 +13,6 @@ import {
 import Button from '@/components/button'
 import { getProductDetailAPI } from '@/api/product/product.api'
 import formatPrice from '@/utils/format-price'
-import { frameTypeLabels, genderLabels } from '@/app/catalog/page'
-import { Spinner } from '@/components/ui/spinner'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -26,6 +24,7 @@ import 'swiper/css/pagination'
 import 'swiper/css/thumbs'
 import 'swiper/css/free-mode'
 import { useCart } from '@/contexts/cart-context'
+import { frameTypeLabels, genderLabels } from '@/types/IFrameTypeLabel'
 
 export default function ProductDetail({ id }: { id: number }) {
     const [product, setProduct] = useState<IProduct | null>(null)

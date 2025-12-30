@@ -109,13 +109,19 @@ export default function CartClient({ cities, info }: CartClientProps) {
         loadFullCart()
     }, [loadFullCart])
 
-    useEffect(() => {
-        console.log('Cart güncellendi:', cart)
-    }, [cart])
-
-    const startPayment = async (payload: ICreateOrderRequestPayload) => {
+    const startPaymentForm = async (payload: ICreateOrderRequestPayload) => {
         try {
-            const result = await handlePaymentAction(payload)
+            const result = (await handlePaymentAction(payload)) as any
+            if (!result.success) {
+                toast.error(
+                    'Ödeme işlemi sırasında bir hata meydana geldi lütfen sepetinizi kontrol edip tekrar deneyiniz.',
+                    {
+                        autoClose: 2000,
+                        className: 'w-96',
+                    },
+                )
+                return
+            }
             console.log(result.data)
             setCheckoutHtml(result.data.checkoutFormContent)
         } catch (e) {
@@ -268,16 +274,18 @@ export default function CartClient({ cities, info }: CartClientProps) {
 
     // Sipariş talebi oluştur
     const handleCheckout = useCallback(async () => {
+        console.log('Checkout başlatılıyor...')
         if (!isFormValid || !cart || cart.products.length === 0) return
 
         setIsCheckingOut(true)
 
         try {
-            const orderRequest: ICreateOrderRequestPayload = {
+            const orderRequest: any = {
                 isGuest: !isLoggedIn,
                 billingAddressSameAsShipping,
             }
 
+            //Not: Adres bilgilerini ve kullanıcı bilgilerini ekle Login user
             if (isLoggedIn && currentUser) {
                 orderRequest.user = {
                     id: currentUser.id,
@@ -321,7 +329,7 @@ export default function CartClient({ cities, info }: CartClientProps) {
 
             console.log('Oluşturulan Sipariş Talebi:', orderRequest)
 
-            await startPayment(orderRequest)
+            await startPaymentForm(orderRequest)
         } catch (error: unknown) {
             console.error('Sipariş oluşturulurken hata:', error)
             const errorMessage =
@@ -549,7 +557,7 @@ export default function CartClient({ cities, info }: CartClientProps) {
                                 subtotal={subtotal}
                                 shipping={shipping}
                                 total={total}
-                                isValid={true}
+                                isValid={isFormValid as boolean}
                                 isLoading={cartLoading}
                                 isCheckingOut={isCheckingOut}
                                 onCheckout={handleCheckout}

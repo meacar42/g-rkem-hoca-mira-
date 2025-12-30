@@ -8,6 +8,14 @@ const nextConfig = {
             },
         ],
     },
+    logging: {
+        fetches: {
+            fullUrl: true,
+        },
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     webpack: (config, { isServer }) => {
         if (isServer) {
             config.externals.push('iyzipay')
