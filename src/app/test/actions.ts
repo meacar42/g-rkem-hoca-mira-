@@ -1,16 +1,36 @@
 'use server'
 
-import { v4 as uuidv4 } from 'uuid'
-import { cookies } from 'next/headers'
 import { ICreateOrderRequestPayload } from '@/types/IOrderRequest'
-import { getCitiesWithDistrictsAPI, getInfoAPI } from '@/api/info/info.api'
+import { getCitiesWithDistrictsAPI } from '@/api/info/info.api'
 import { IProduct } from '@/types/IProduct'
+
+async function createBasket(buyerEmail: string, buyerId?: number) {
+    const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/orders/basket',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Basic ' + process.env.API_BASIC_AUTH_SECRET,
+            },
+            body: JSON.stringify({ buyerEmail, buyerId }),
+            cache: 'no-store',
+        },
+    )
+
+    if (!response.ok) {
+        throw new Error('An error occurred while creating basket')
+    }
+
+    return await response.text()
+}
 
 async function getSubtotalAmount(
     products: { productId: number; quantity: number }[],
 ): Promise<{
     products: IProduct[]
     subtotal: number
+    shipment: { isFree: boolean; price: number }
 }> {
     console.log('products', products)
 
@@ -38,10 +58,12 @@ async function getSubtotalAmount(
 
 export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
     try {
-        const [subtotalResponse, info, cities] = await Promise.all([
+        const buyer = payload.isGuest ? payload.guest! : payload.user!
+
+        const [subtotalResponse, cities, basketId] = await Promise.all([
             getSubtotalAmount(payload.products),
-            getInfoAPI(),
             getCitiesWithDistrictsAPI(),
+            createBasket(buyer.email, payload.isGuest ? undefined : buyer.id),
         ])
 
         const Iyzipay = require('iyzipay')
@@ -51,13 +73,11 @@ export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
             uri: 'https://sandbox-api.iyzipay.com',
         })
 
-        const buyer = payload.isGuest ? payload.guest! : payload.user!
-        const isShipmentFree =
-            info.shipmentMinPrice <= subtotalResponse.subtotal
+        const isShipmentFree = subtotalResponse.shipment.isFree
         const totalPrice = (
             isShipmentFree
                 ? subtotalResponse.subtotal
-                : subtotalResponse.subtotal + info.shipmentPrice
+                : subtotalResponse.subtotal + subtotalResponse.shipment.price
         ).toString()
 
         const city = cities.find(
@@ -100,16 +120,15 @@ export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
 
         console.log('Payload:', payload)
 
-        const conversationId = uuidv4()
+        const enabledInstallments = [1]
 
         const request = {
             locale: 'tr',
-            conversationId,
             price: totalPrice,
             paidPrice: totalPrice,
             currency: 'TRY',
-            enabledInstallments: [1],
-            //basketId: 'B6783224',
+            enabledInstallments: enabledInstallments,
+            basketId: basketId,
             paymentChannel: 'WEB',
             paymentGroup: 'PRODUCT',
             callbackUrl: 'http://localhost:3000/api/checkout/callback',
@@ -160,7 +179,7 @@ export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
                               name: 'Shipping Cost',
                               category1: 'Service',
                               itemType: 'PHYSICAL',
-                              price: info.shipmentPrice,
+                              price: subtotalResponse.shipment.price,
                           },
                       ]),
             ],
@@ -175,10 +194,6 @@ export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
                     if (err)
                         resolve({ success: false, error: 'An Error Occurred' })
                     else {
-                        cookies().set('mci', conversationId, {
-                            httpOnly: true,
-                            expires: new Date(Date.now() + 5 * 60 * 1000),
-                        })
                         resolve({ success: true, data: result })
                     }
                 },

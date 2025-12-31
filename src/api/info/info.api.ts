@@ -22,9 +22,7 @@ export async function getInfoAPI(): Promise<IInfo> {
         process.env.NEXT_PUBLIC_BACKEND_API_URL + '/info',
         {
             method: 'GET',
-        },
-        {
-            revalidate: 3600, // 1 saat cache
+            cache: 'no-cache',
         },
     )
 }
@@ -36,7 +34,7 @@ export async function getCitiesWithDistrictsAPI(): Promise<ICity[]> {
             method: 'GET',
         },
         {
-            revalidate: 86400, // 24 saat cache (şehirler sık değişmez)
+            revalidate: 86400,
         },
     )
 }
