@@ -15,6 +15,8 @@ type PaymentResult = {
     lastFourDigits: string
     itemTransactions: {
         itemId: string
+        price: number
+        paidPrice: number
     }[]
 }
 
@@ -75,7 +77,7 @@ async function createOrderRequest(
 
 export async function POST(req: Request) {
     const formData = await req.formData()
-    console.log('formData', formData)
+    //console.log('formData', formData)
 
     const token = formData.get('token')
 
@@ -118,12 +120,12 @@ export async function POST(req: Request) {
     const productIds = paymentResult.itemTransactions
         .filter((item) => item.itemId !== 'SHIPPING')
         .map((item) => parseInt(item.itemId))
+
     const shipmentItem = paymentResult.itemTransactions.find(
         (item) => item.itemId === 'SHIPPING',
     )
-    const shipmentPrice = shipmentItem
-        ? paymentResult.paidPrice - paymentResult.price
-        : 0
+
+    const shipmentPrice = shipmentItem ? shipmentItem.price : 0
 
     const order = await createOrderRequest({
         price: paymentResult.price,
