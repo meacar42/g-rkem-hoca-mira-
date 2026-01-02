@@ -32,6 +32,7 @@ export async function getCitiesWithDistrictsAPI(): Promise<ICity[]> {
         process.env.NEXT_PUBLIC_BACKEND_API_URL + '/info/cities',
         {
             method: 'GET',
+            //cache: 'no-cache', // for development
         },
         {
             revalidate: 86400,

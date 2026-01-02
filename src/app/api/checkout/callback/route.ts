@@ -48,8 +48,7 @@ async function getBasketRequest(
     })
 
     if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Sepet bilgisi alınamadı')
+        throw new Error('Sepet bilgisi alınamadı')
     }
 
     return response.json()
@@ -68,8 +67,7 @@ async function createOrderRequest(
     })
 
     if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Sipariş oluşturulamadı')
+        throw new Error('Sipariş oluşturulamadı')
     }
 
     return response.json()
