@@ -1,5 +1,15 @@
 export const baseURL = process.env.NEXT_PUBLIC_BACKEND_API_URL
 
+export type ApiResponse = {
+    isError: boolean
+    error:
+        | {
+              code: number
+              message: string
+          }
+        | undefined
+}
+
 export async function fetchPublicAPI<T>(
     url: string,
     options: RequestInit = {},

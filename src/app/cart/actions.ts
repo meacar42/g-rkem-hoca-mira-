@@ -32,7 +32,7 @@ async function getSubtotalAmount(
     subtotal: number
     shipment: { isFree: boolean; price: number }
 }> {
-    console.log('products', products)
+    console.log('Cart.Actions.getSubTotalAmount:', products)
 
     const response = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_API_URL + '/cart/guest-total',
@@ -118,7 +118,7 @@ export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
             }
         }
 
-        console.log('Payload:', payload)
+        console.log('Request Payload:', payload)
 
         const enabledInstallments = [1]
 

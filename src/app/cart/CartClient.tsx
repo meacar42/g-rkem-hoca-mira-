@@ -42,7 +42,7 @@ import {
     CartItemList,
     OrderSummary,
 } from './components'
-import { handlePaymentAction } from '@/app/test/actions'
+import { handlePaymentAction } from '@/app/cart/actions'
 
 // Validasyon fonksiyonları
 const isPhoneValid = (phone: string) => phone.replace(/\D/g, '').length >= 10
