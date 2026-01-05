@@ -68,9 +68,9 @@ export async function handlePaymentAction(payload: ICreateOrderRequestPayload) {
 
         const Iyzipay = require('iyzipay')
         const iyzipay = new Iyzipay({
-            apiKey: 'sandbox-8te0rjAwusnpviNR3RrkZYptaFbSFBUN',
-            secretKey: 'X2C8teB60VkPLB50hWaL9noJmNbt9NXN',
-            uri: 'https://sandbox-api.iyzipay.com',
+            apiKey: process.env.IYZICO_API_KEY,
+            secretKey: process.env.IYZICO_SECRET_KEY,
+            uri: process.env.IYZICO_BASE_URL,
         })
 
         const isShipmentFree = subtotalResponse.shipment.isFree
