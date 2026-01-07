@@ -36,7 +36,7 @@ export default async function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <UserProvider currentUser={null}>
-                    <CartProvider isLoggedIn={false}>
+                    <CartProvider>
                         <Header />
                         <ToastContainer
                             position="bottom-right"

@@ -90,9 +90,6 @@ export default function CartClient({ cities, info }: CartClientProps) {
     // Fatura adresi
     const [billingAddressSameAsShipping, setBillingAddressSameAsShipping] =
         useState(true)
-    const [selectedBillingAddressId, setSelectedBillingAddressId] = useState<
-        number | null
-    >(null)
     const [billingAddress, setBillingAddress] = useState<GuestAddress>({
         cityId: '',
         districtId: '',
@@ -219,17 +216,25 @@ export default function CartClient({ cities, info }: CartClientProps) {
             const maxStock = item.product?.stockQuantity || 99
             if (newQuantity > maxStock) return
 
-            await updateCartItem(item.productId, newQuantity)
+            // Logged-in kullanıcı için item.id (cart item id), guest için productId kullan
+            // item.id yoksa productId'ye fallback yap
+            const idToUpdate =
+                isLoggedIn && item.id != null ? item.id : item.productId
+            await updateCartItem(idToUpdate, newQuantity)
         },
-        [updateCartItem],
+        [updateCartItem, isLoggedIn],
     )
 
     // Ürün silme
     const handleRemoveItem = useCallback(
         async (item: CartItem) => {
-            await removeFromCart(item.productId)
+            // Logged-in kullanıcı için item.id (cart item id), guest için productId kullan
+            // item.id yoksa productId'ye fallback yap
+            const idToRemove =
+                isLoggedIn && item.id != null ? item.id : item.productId
+            await removeFromCart(idToRemove)
         },
-        [removeFromCart],
+        [removeFromCart, isLoggedIn],
     )
 
     // Validasyonlar (memoized)
@@ -256,17 +261,10 @@ export default function CartClient({ cities, info }: CartClientProps) {
         () =>
             billingAddressSameAsShipping
                 ? true
-                : isLoggedIn
-                  ? selectedBillingAddressId !== null
-                  : billingAddress.cityId &&
-                    billingAddress.districtId &&
-                    billingAddress.addressDetail.trim().length >= 10,
-        [
-            billingAddressSameAsShipping,
-            isLoggedIn,
-            selectedBillingAddressId,
-            billingAddress,
-        ],
+                : billingAddress.cityId &&
+                  billingAddress.districtId &&
+                  billingAddress.addressDetail.trim().length >= 10,
+        [billingAddressSameAsShipping, billingAddress],
     )
 
     const isFormValid =
@@ -287,6 +285,16 @@ export default function CartClient({ cities, info }: CartClientProps) {
 
             //Not: Adres bilgilerini ve kullanıcı bilgilerini ekle Login user
             if (isLoggedIn && currentUser) {
+                const selectedShippingAddress = userAddresses.find(
+                    (addr) => addr.id === selectedAddressId,
+                )
+
+                if (!selectedShippingAddress) {
+                    toast.error('Lütfen bir teslimat adresi seçin')
+                    setIsCheckingOut(false)
+                    return
+                }
+
                 orderRequest.user = {
                     id: currentUser.id,
                     email: contactInfo.email,
@@ -294,10 +302,20 @@ export default function CartClient({ cities, info }: CartClientProps) {
                     surname: contactInfo.surname || undefined,
                     phone: contactInfo.phone || undefined,
                 }
-                orderRequest.shippingAddressId = selectedAddressId!
+
+                orderRequest.shippingAddress = {
+                    cityId: selectedShippingAddress.cityId,
+                    districtId: selectedShippingAddress.districtId,
+                    addressDetail: selectedShippingAddress.addressDetail,
+                    zipCode: selectedShippingAddress.postalCode || '',
+                }
 
                 if (!billingAddressSameAsShipping) {
-                    orderRequest.billingAddressId = selectedBillingAddressId!
+                    orderRequest.billingAddress = {
+                        cityId: parseInt(billingAddress.cityId),
+                        districtId: parseInt(billingAddress.districtId),
+                        addressDetail: billingAddress.addressDetail,
+                    }
                 }
             } else {
                 orderRequest.guest = {
@@ -327,7 +345,7 @@ export default function CartClient({ cities, info }: CartClientProps) {
                 quantity: item.quantity,
             }))
 
-            console.log('Oluşturulan Sipariş Talebi:', orderRequest)
+            //console.log('Oluşturulan Sipariş Talebi:', orderRequest)
 
             await startPaymentForm(orderRequest)
         } catch (error: unknown) {
@@ -347,7 +365,7 @@ export default function CartClient({ cities, info }: CartClientProps) {
         currentUser,
         contactInfo,
         selectedAddressId,
-        selectedBillingAddressId,
+        userAddresses,
         billingAddressSameAsShipping,
         shippingAddress,
         billingAddress,
@@ -487,16 +505,11 @@ export default function CartClient({ cities, info }: CartClientProps) {
                                     <Checkbox
                                         id="sameAsShipping"
                                         checked={billingAddressSameAsShipping}
-                                        onCheckedChange={(checked) => {
+                                        onCheckedChange={(checked) =>
                                             setBillingAddressSameAsShipping(
                                                 checked === true,
                                             )
-                                            if (checked && isLoggedIn) {
-                                                setSelectedBillingAddressId(
-                                                    selectedAddressId,
-                                                )
-                                            }
-                                        }}
+                                        }
                                     />
                                     <Label
                                         htmlFor="sameAsShipping"
@@ -508,33 +521,12 @@ export default function CartClient({ cities, info }: CartClientProps) {
 
                                 {!billingAddressSameAsShipping && (
                                     <div className="mt-4">
-                                        {userLoading ? (
-                                            <div className="flex items-center justify-center py-8">
-                                                <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
-                                            </div>
-                                        ) : isLoggedIn ? (
-                                            <AddressSelector
-                                                addresses={userAddresses}
-                                                selectedAddressId={
-                                                    selectedBillingAddressId
-                                                }
-                                                onSelect={
-                                                    setSelectedBillingAddressId
-                                                }
-                                                isLoading={isLoadingAddresses}
-                                                emptyIcon={
-                                                    <FileText className="mx-auto h-10 w-10 text-gray-400" />
-                                                }
-                                                showAddButton={false}
-                                            />
-                                        ) : (
-                                            <GuestAddressForm
-                                                address={billingAddress}
-                                                onChange={setBillingAddress}
-                                                cities={cities}
-                                                idPrefix="billing-"
-                                            />
-                                        )}
+                                        <GuestAddressForm
+                                            address={billingAddress}
+                                            onChange={setBillingAddress}
+                                            cities={cities}
+                                            idPrefix="billing-"
+                                        />
                                     </div>
                                 )}
                             </div>

@@ -21,6 +21,7 @@ import {
 } from '@/api/cart/cart.api'
 import { toast } from 'react-toastify'
 import { ShoppingCart } from 'lucide-react'
+import { useUser } from '@/hooks/use-user'
 
 // Boş cart için default değerler
 const emptyCart: Cart = {
@@ -49,10 +50,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 interface CartProviderProps {
     children: ReactNode
-    isLoggedIn: boolean
 }
 
-export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
+export function CartProvider({ children }: CartProviderProps) {
+    const { isLoggedIn } = useUser()
+
     // Local cart - sadece productId ve quantity (header badge için)
     const [localCart, setLocalCart] = useState<LocalCart>({ items: [] })
     // Full cart - ürün bilgileriyle (cart sayfası için)
@@ -66,29 +68,44 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
         setLocalCart(storedCart)
     }, [])
 
-    // Giriş yapıldığında guest cart'ı merge et
+    // Giriş/çıkış durumunda cart'ı yönet
     useEffect(() => {
         if (isLoggedIn) {
+            // Giriş yapıldığında guest cart'ı merge et
             mergeGuestCart()
+        } else {
+            // Çıkış yapıldığında cart state'ini temizle ve localStorage'dan yükle
+            setCart(null)
+            const storedCart = cartStorage.getCart()
+            setLocalCart(storedCart)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoggedIn])
 
     const mergeGuestCart = async () => {
         const storedCart = cartStorage.getCart()
-        if (storedCart.items.length === 0) return
 
         try {
-            const mergedCart = await mergeCart(storedCart.items)
-            setCart(mergedCart)
+            let userCart: Cart
+
+            if (storedCart.items.length > 0) {
+                // Guest cart varsa merge et
+                userCart = await mergeCart(storedCart.items)
+                cartStorage.clearCart()
+            } else {
+                // Guest cart boşsa sadece backend'den cart'ı çek
+                userCart = await getCart()
+            }
+
+            setCart(userCart)
             setLocalCart({
-                items: mergedCart.products.map((i) => ({
+                items: userCart.products.map((i) => ({
                     productId: i.productId,
                     quantity: i.quantity,
                 })),
             })
-            cartStorage.clearCart()
         } catch (error) {
-            console.error('Failed to merge cart:', error)
+            console.error('Failed to load/merge cart:', error)
         }
     }
 
@@ -159,6 +176,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
     }, [isLoggedIn])
 
     const addToCart = async (productId: number, quantity: number) => {
+        if (isLoading) return // Race condition önleme
         setIsLoading(true)
         try {
             if (isLoggedIn) {
@@ -185,6 +203,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
             })
         } catch (error) {
             console.error('Failed to add to cart:', error)
+            toast.error('Ürün sepete eklenirken bir hata oluştu')
             throw error
         } finally {
             setIsLoading(false)
@@ -192,6 +211,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
     }
 
     const updateCartItem = async (itemId: number, quantity: number) => {
+        if (isLoading) return // Race condition önleme
         setIsLoading(true)
         try {
             if (isLoggedIn) {
@@ -222,6 +242,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
             }
         } catch (error) {
             console.error('Failed to update cart item:', error)
+            toast.error('Ürün miktarı güncellenirken bir hata oluştu')
             throw error
         } finally {
             setIsLoading(false)
@@ -229,6 +250,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
     }
 
     const removeFromCart = async (itemIdOrProductId: number) => {
+        if (isLoading) return // Race condition önleme
         setIsLoading(true)
         try {
             if (isLoggedIn) {
@@ -256,6 +278,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
             }
         } catch (error) {
             console.error('Failed to remove from cart:', error)
+            toast.error('Ürün sepetten silinirken bir hata oluştu')
             throw error
         } finally {
             setIsLoading(false)
@@ -263,6 +286,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
     }
 
     const clearCart = async () => {
+        if (isLoading) return // Race condition önleme
         setIsLoading(true)
         try {
             if (isLoggedIn) {
@@ -274,6 +298,7 @@ export function CartProvider({ children, isLoggedIn }: CartProviderProps) {
             setCart(emptyCart)
         } catch (error) {
             console.error('Failed to clear cart:', error)
+            toast.error('Sepet temizlenirken bir hata oluştu')
             throw error
         } finally {
             setIsLoading(false)
