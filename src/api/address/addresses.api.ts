@@ -82,7 +82,7 @@ export interface IUpdateAddressRequest {
 // Tüm adresleri getir
 export async function getAddressesAPI(): Promise<IAddress[]> {
     const responses = await fetchAuthAPI<IAddressResponse[]>(
-        process.env.NEXT_PUBLIC_BACKEND_API_URL + 'users/addresses',
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/users/addresses',
         {
             method: 'GET',
         },
@@ -94,7 +94,7 @@ export async function getAddressesAPI(): Promise<IAddress[]> {
 export async function getAddressByIdAPI(addressId: number): Promise<IAddress> {
     const response = await fetchAuthAPI<IAddressResponse>(
         process.env.NEXT_PUBLIC_BACKEND_API_URL +
-            `users/addresses/${addressId}`,
+            `/users/addresses/${addressId}`,
         {
             method: 'GET',
         },
@@ -107,7 +107,7 @@ export async function createAddressAPI(
     request: ICreateAddressRequest,
 ): Promise<IAddress> {
     const response = await fetchAuthAPI<IAddressResponse>(
-        process.env.NEXT_PUBLIC_BACKEND_API_URL + 'users/addresses',
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/users/addresses',
         {
             method: 'POST',
             body: JSON.stringify(request),
@@ -123,7 +123,7 @@ export async function updateAddressAPI(
 ): Promise<IAddress> {
     const response = await fetchAuthAPI<IAddressResponse>(
         process.env.NEXT_PUBLIC_BACKEND_API_URL +
-            `users/addresses/${addressId}`,
+            `/users/addresses/${addressId}`,
         {
             method: 'PUT',
             body: JSON.stringify(request),
@@ -138,7 +138,7 @@ export async function deleteAddressAPI(
 ): Promise<{ message: string }> {
     return fetchAuthAPI<{ message: string }>(
         process.env.NEXT_PUBLIC_BACKEND_API_URL +
-            `users/addresses/${addressId}`,
+            `/users/addresses/${addressId}`,
         {
             method: 'DELETE',
         },
@@ -151,7 +151,7 @@ export async function setDefaultAddressAPI(
 ): Promise<IAddress> {
     const response = await fetchAuthAPI<IAddressResponse>(
         process.env.NEXT_PUBLIC_BACKEND_API_URL +
-            `users/addresses/${addressId}/set-default`,
+            `/users/addresses/${addressId}/set-default`,
         {
             method: 'POST',
         },

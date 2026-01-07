@@ -15,7 +15,7 @@ export async function updateProfileAPI(
     request: IUpdateProfileRequest,
 ): Promise<IUpdateProfileResponse> {
     return fetchAuthAPI<IUpdateProfileResponse>(
-        process.env.NEXT_PUBLIC_BACKEND_API_URL + 'auth/me',
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/auth/me',
         {
             method: 'PUT',
             body: JSON.stringify(request),

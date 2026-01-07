@@ -14,7 +14,7 @@ export async function registerAPI(
     request: IRegisterRequest,
 ): Promise<IRegisterResponse> {
     return fetchPublicAPI<IRegisterResponse>(
-        process.env.NEXT_PUBLIC_BACKEND_API_URL + 'auth/register',
+        process.env.NEXT_PUBLIC_BACKEND_API_URL + '/auth/register',
         {
             method: 'POST',
             body: JSON.stringify(request),
