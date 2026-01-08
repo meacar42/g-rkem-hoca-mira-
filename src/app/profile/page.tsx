@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
     User,
     MapPin,
@@ -8,6 +9,7 @@ import {
     Phone,
     ChevronRight,
     AlertOctagon,
+    LogOut,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -16,7 +18,13 @@ import { useUser } from '@/hooks/use-user'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 export default function ProfilePage() {
-    const { currentUser } = useUser()
+    const { currentUser, logout } = useUser()
+    const router = useRouter()
+
+    const handleLogout = () => {
+        logout()
+        router.push('/')
+    }
 
     const isUserDataIncomplete =
         !currentUser?.phone || !currentUser?.name || !currentUser?.surname
@@ -195,6 +203,28 @@ export default function ProfilePage() {
                             </div>
                         </Card>
                     </Link>
+
+                    <Card
+                        className="cursor-pointer p-4 transition-shadow hover:shadow-md"
+                        onClick={handleLogout}
+                    >
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-50">
+                                    <LogOut className="h-6 w-6 text-red-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-red-600">
+                                        Çıkış Yap
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        Hesabından güvenli çıkış yap
+                                    </p>
+                                </div>
+                            </div>
+                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                    </Card>
                 </div>
             </div>
         </div>

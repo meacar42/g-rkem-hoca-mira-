@@ -82,7 +82,7 @@ export default function Footer() {
                                 <Instagram className="h-5 w-5" />
                             </Link>
                             <Link
-                                href="https://l.instagram.com/?u=http%3A%2F%2Fwa.me%2F905300641700&e=AT2D5rENJgm5Nzr8dT9d4f47yrgGON2VHSbP1WHavHYZgY6gPeP_DFnbCBP2KDWlJoa_CNFTLJambcWMXzNXPa_2jEs6Ij6JTY_dAMW1ILmSDnfK"
+                                href="https://wa.me/905300641700"
                                 className="hover:text-emerald-500"
                             >
                                 <Phone className="h-5 w-5" />
