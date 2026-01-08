@@ -13,11 +13,11 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const navigation = [
-        { name: 'Home', href: '/' },
-        { name: 'Sunglasses', href: '/catalog' },
-        { name: 'Eyeglasses', href: '/catalog' },
-        { name: 'About', href: '/about' },
-        { name: 'Contact', href: '/contact' },
+        { name: 'Ana Sayfa', href: '/' },
+        { name: 'Güneş Gözlüğü', href: '/catalog' },
+        { name: 'Optik Gözlük', href: '/catalog' },
+        { name: 'Lens Solüsyonu', href: '/about' },
+        { name: 'Hakkımızda', href: '/contact' },
     ]
 
     return (

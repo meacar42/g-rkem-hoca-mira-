@@ -11,19 +11,19 @@ import getSlidesAPI from '@/api/slide/get-slides.api'
 const slides = [
     {
         id: 1,
-        title: 'Discover Your Perfect Pair',
-        description: 'Explore our latest collection of stylish eyewear',
+        title: 'Mükemmel Gözlüğünüzü Keşfedin',
+        description: 'Şık gözlük koleksiyonumuzu inceleyin',
         imageUrl:
             'https://images.pexels.com/photos/1005633/pexels-photo-1005633.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        link: '/sunglasses',
+        link: '/catalog',
     },
     {
         id: 2,
-        title: 'Summer Shades Are Here',
-        description: 'Get ready for the sun with our trendy sunglasses',
+        title: 'Yaz Güneş Gözlükleri Burada',
+        description: 'Trend güneş gözlüklerimizle güneşe hazır olun',
         imageUrl:
             'https://images.pexels.com/photos/46710/pexels-photo-46710.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        link: '/sunglasses',
+        link: '/catalog',
     },
 ]
 
@@ -36,50 +36,56 @@ async function Slides() {
 export default function Home() {
     return (
         <div className="min-h-screen">
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<div>Yükleniyor...</div>}>
                 <Slides />
             </Suspense>
 
             <section className="bg-white py-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                        <Link href="/sunglasses" className="group">
+                        <Link
+                            href="/catalog?category=sunglasses"
+                            className="group"
+                        >
                             <div className="relative h-96 overflow-hidden rounded-2xl shadow-lg">
                                 <img
                                     src="https://images.pexels.com/photos/701877/pexels-photo-701877.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                                    alt="Sunglasses"
+                                    alt="Güneş Gözlükleri"
                                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 to-transparent">
                                     <div className="w-full p-8">
                                         <h2 className="mb-2 text-4xl font-bold text-white">
-                                            Sunglasses
+                                            Güneş Gözlükleri
                                         </h2>
                                         <p className="mb-4 text-gray-200">
-                                            Protect your eyes in style
+                                            Gözlerinizi şıklıkla koruyun
                                         </p>
-                                        <Button>Shop Now</Button>
+                                        <Button>Alışverişe Başla</Button>
                                     </div>
                                 </div>
                             </div>
                         </Link>
 
-                        <Link href="/eyeglasses" className="group">
+                        <Link
+                            href="/catalog?category=eyeglasses"
+                            className="group"
+                        >
                             <div className="relative h-96 overflow-hidden rounded-2xl shadow-lg">
                                 <img
                                     src="https://images.pexels.com/photos/1627639/pexels-photo-1627639.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                                    alt="Eyeglasses"
+                                    alt="Numaralı Gözlükler"
                                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 to-transparent">
                                     <div className="w-full p-8">
                                         <h2 className="mb-2 text-4xl font-bold text-white">
-                                            Eyeglasses
+                                            Optik Gözlükler
                                         </h2>
                                         <p className="mb-4 text-gray-200">
-                                            Vision meets fashion
+                                            Görüş modasıyla buluşuyor
                                         </p>
-                                        <Button>Shop Now</Button>
+                                        <Button>Alışverişe Başla</Button>
                                     </div>
                                 </div>
                             </div>
@@ -92,10 +98,10 @@ export default function Home() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-12 text-center">
                         <h2 className="mb-4 text-4xl font-bold text-black">
-                            Featured Collection
+                            Öne Çıkan Koleksiyon
                         </h2>
                         <p className="text-lg text-gray-600">
-                            Handpicked styles for every personality
+                            Her tarza uygun el seçmesi modeller
                         </p>
                     </div>
 
@@ -110,9 +116,9 @@ export default function Home() {
                     </div>
 
                     <div className="mt-12 text-center">
-                        <Link href="/sunglasses">
+                        <Link href="/catalog">
                             <Button size="lg" variant="outline">
-                                View All Products
+                                Tüm Ürünleri Gör
                             </Button>
                         </Link>
                     </div>
