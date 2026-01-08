@@ -20,15 +20,21 @@ export default function ProductCard({
         <div className="group overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl">
             <div className="relative aspect-square overflow-hidden bg-gray-50">
                 <AspectRatio ratio={1} className="rounded-lg bg-muted">
-                    <Image
-                        src={
-                            process.env.NEXT_PUBLIC_STORAGE_URL +
-                            product.images[0]
-                        }
-                        alt="Photo by Drew Beamer"
-                        fill
-                        className="h-full w-full rounded-lg object-cover dark:brightness-[0.2] dark:grayscale"
-                    />
+                    {product.images?.length > 0 ? (
+                        <Image
+                            src={
+                                process.env.NEXT_PUBLIC_STORAGE_URL +
+                                product.images[0]
+                            }
+                            alt={product.name}
+                            fill
+                            className="h-full w-full rounded-lg object-cover"
+                        />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-100">
+                            <span className="text-gray-400">Resim yok</span>
+                        </div>
+                    )}
                 </AspectRatio>
 
                 <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black bg-opacity-0 opacity-0 transition-all duration-300 group-hover:bg-opacity-30 group-hover:opacity-100">

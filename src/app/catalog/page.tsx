@@ -75,8 +75,8 @@ export default function CatalogPage() {
                 setTotalPages(response.totalPages)
                 setTotalProducts(response.total)
                 setCurrentPage(response.page)
-            } catch (error) {
-                console.error('Failed to fetch products:', error)
+            } catch {
+                // Hata sessizce yönetiliyor
             } finally {
                 setLoading(false)
             }
