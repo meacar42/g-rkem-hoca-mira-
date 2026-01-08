@@ -1,31 +1,12 @@
 import Link from 'next/link'
 import Button from '@/components/button'
 import { Suspense } from 'react'
-import { getProductsAPI } from '@/api/product/product.api'
 import HeroSlider from '@/components/hero-slider'
 import { StatsCounter } from '@/components/stats-counter'
 import { InteractiveShowcase } from '@/components/interactive-showcase'
 import { CustomerComments } from '@/components/customer-comments'
 import getSlidesAPI from '@/api/slide/get-slides.api'
-
-const slides = [
-    {
-        id: 1,
-        title: 'Mükemmel Gözlüğünüzü Keşfedin',
-        description: 'Şık gözlük koleksiyonumuzu inceleyin',
-        imageUrl:
-            'https://images.pexels.com/photos/1005633/pexels-photo-1005633.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        link: '/catalog',
-    },
-    {
-        id: 2,
-        title: 'Yaz Güneş Gözlükleri Burada',
-        description: 'Trend güneş gözlüklerimizle güneşe hazır olun',
-        imageUrl:
-            'https://images.pexels.com/photos/46710/pexels-photo-46710.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        link: '/catalog',
-    },
-]
+import BrandSlider from '@/components/brand-slider'
 
 async function Slides() {
     const slides = await getSlidesAPI()
@@ -105,15 +86,9 @@ export default function Home() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                        {/*{featuredProducts?.map(product => (*/}
-                        {/*    <ProductCard*/}
-                        {/*        key={product.id}*/}
-                        {/*        product={product}*/}
-                        {/*        onAddToCart={() => {}}*/}
-                        {/*    />*/}
-                        {/*))}*/}
-                    </div>
+                    <section>
+                        <BrandSlider />
+                    </section>
 
                     <div className="mt-12 text-center">
                         <Link href="/catalog">

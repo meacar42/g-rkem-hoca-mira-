@@ -1,22 +1,15 @@
-'use client'
 import { Eye, Heart, Award, Users } from 'lucide-react'
-import { UserContext } from '@/contexts/user-context'
-import { useUser } from '@/hooks/use-user'
 
 export default function About() {
-    const { currentUser } = useUser()
-
     return (
         <div className="min-h-screen bg-gray-50">
             <section className="bg-gradient-to-br from-emerald-500 to-emerald-600 py-20 text-white">
                 <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-                    <h1 className="mb-6 text-5xl font-bold">
-                        About Mira Optik
-                    </h1>
+                    <h1 className="mb-6 text-5xl font-bold">Hakkımızda</h1>
                     <p className="mx-auto max-w-3xl text-xl text-emerald-100">
-                        Your trusted partner in vision care since 2010. We
-                        believe everyone deserves to see clearly and look great
-                        doing it.
+                        2015 yılından bu yana göz sağlığında güvenilir
+                        partneriniz. Herkesin net görmesi ve bunu yaparken
+                        harika görünmesi gerektiğine inanıyoruz.
                     </p>
                 </div>
             </section>
@@ -26,34 +19,34 @@ export default function About() {
                     <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                         <div>
                             <h2 className="mb-6 text-4xl font-bold text-black">
-                                Our Story
+                                Hikayemiz
                             </h2>
                             <p className="mb-4 leading-relaxed text-gray-700">
-                                Mira Optik was founded with a simple mission: to
-                                provide high-quality eyewear that combines
-                                style, comfort, and affordability. What started
-                                as a small local shop has grown into a trusted
-                                online destination for thousands of customers.
+                                Mira Optik, basit bir misyonla kuruldu: stil,
+                                konfor ve uygun fiyatı bir arada sunan yüksek
+                                kaliteli gözlükler sağlamak. Küçük bir yerel
+                                mağaza olarak başlayan serüvenimiz, binlerce
+                                müşterinin güvendiği bir online destinasyona
+                                dönüştü.
                             </p>
                             <p className="mb-4 leading-relaxed text-gray-700">
-                                We carefully curate our collection to include
-                                frames that suit every face shape, personal
-                                style, and budget. From classic designs to
-                                trendy statement pieces, we have something for
-                                everyone.
+                                Koleksiyonumuzu her yüz şekline, kişisel tarza
+                                ve bütçeye uygun çerçeveler içerecek şekilde
+                                özenle seçiyoruz. Klasik tasarımlardan trend
+                                parçalara kadar herkes için bir şeyler var.
                             </p>
                             <p className="leading-relaxed text-gray-700">
-                                Our commitment to quality means we only work
-                                with reputable manufacturers and use premium
-                                materials. Every pair of glasses is inspected to
-                                ensure it meets our high standards before
-                                reaching you.
+                                Kaliteye olan bağlılığımız, yalnızca saygın
+                                üreticilerle çalışmamız ve premium malzemeler
+                                kullanmamız anlamına gelir. Her gözlük, size
+                                ulaşmadan önce yüksek standartlarımızı
+                                karşıladığından emin olmak için kontrol edilir.
                             </p>
                         </div>
                         <div className="overflow-hidden rounded-lg shadow-xl">
                             <img
                                 src="https://images.pexels.com/photos/1627639/pexels-photo-1627639.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                                alt="Eyewear collection"
+                                alt="Gözlük koleksiyonu"
                                 className="h-full w-full object-cover"
                             />
                         </div>
@@ -64,7 +57,7 @@ export default function About() {
             <section className="bg-white py-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h2 className="mb-12 text-center text-4xl font-bold text-black">
-                        Our Values
+                        Değerlerimiz
                     </h2>
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                         <div className="text-center">
@@ -72,11 +65,11 @@ export default function About() {
                                 <Eye className="h-10 w-10 text-emerald-600" />
                             </div>
                             <h3 className="mb-2 text-xl font-bold">
-                                Quality Vision
+                                Kaliteli Görüş
                             </h3>
                             <p className="text-gray-600">
-                                We ensure every lens provides crystal-clear
-                                vision with the latest optical technology.
+                                Her lensin en son optik teknoloji ile kristal
+                                netliğinde görüş sağlamasını garantiliyoruz.
                             </p>
                         </div>
 
@@ -85,11 +78,11 @@ export default function About() {
                                 <Heart className="h-10 w-10 text-emerald-600" />
                             </div>
                             <h3 className="mb-2 text-xl font-bold">
-                                Customer Care
+                                Müşteri İlgisi
                             </h3>
                             <p className="text-gray-600">
-                                Your satisfaction is our priority. We're here to
-                                help you find the perfect pair.
+                                Memnuniyetiniz önceliğimizdir. Mükemmel çifti
+                                bulmanıza yardımcı olmak için buradayız.
                             </p>
                         </div>
 
@@ -98,11 +91,11 @@ export default function About() {
                                 <Award className="h-10 w-10 text-emerald-600" />
                             </div>
                             <h3 className="mb-2 text-xl font-bold">
-                                Premium Quality
+                                Premium Kalite
                             </h3>
                             <p className="text-gray-600">
-                                Only the finest materials and craftsmanship go
-                                into every frame we sell.
+                                Sattığımız her çerçevede yalnızca en kaliteli
+                                malzemeler ve işçilik kullanılır.
                             </p>
                         </div>
 
@@ -110,12 +103,10 @@ export default function About() {
                             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
                                 <Users className="h-10 w-10 text-emerald-600" />
                             </div>
-                            <h3 className="mb-2 text-xl font-bold">
-                                Community
-                            </h3>
+                            <h3 className="mb-2 text-xl font-bold">Topluluk</h3>
                             <p className="text-gray-600">
-                                We're committed to giving back and supporting
-                                eye health initiatives worldwide.
+                                Türkiye genelinde göz sağlığı girişimlerini
+                                desteklemeye ve geri vermeye kararlıyız.
                             </p>
                         </div>
                     </div>
@@ -125,30 +116,28 @@ export default function About() {
             <section className="bg-black py-16 text-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h2 className="mb-12 text-center text-4xl font-bold">
-                        Why Choose Mira Optik?
+                        Neden Mira Optik?
                     </h2>
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                         <div className="rounded-lg bg-gray-900 p-6">
                             <h3 className="mb-3 text-2xl font-bold text-emerald-500">
-                                10,000+
+                                10.000+
+                            </h3>
+                            <p className="text-gray-300">Mutlu müşteri</p>
+                        </div>
+                        <div className="rounded-lg bg-gray-900 p-6">
+                            <h3 className="mb-3 text-2xl font-bold text-emerald-500">
+                                200+
                             </h3>
                             <p className="text-gray-300">
-                                Happy customers worldwide
+                                Farklı marka ve model
                             </p>
                         </div>
                         <div className="rounded-lg bg-gray-900 p-6">
                             <h3 className="mb-3 text-2xl font-bold text-emerald-500">
-                                500+
+                                10+ Yıl
                             </h3>
-                            <p className="text-gray-300">Unique frame styles</p>
-                        </div>
-                        <div className="rounded-lg bg-gray-900 p-6">
-                            <h3 className="mb-3 text-2xl font-bold text-emerald-500">
-                                15+ Years
-                            </h3>
-                            <p className="text-gray-300">
-                                In the eyewear industry
-                            </p>
+                            <p className="text-gray-300">Sektör deneyimi</p>
                         </div>
                     </div>
                 </div>
@@ -157,18 +146,19 @@ export default function About() {
             <section className="py-16">
                 <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
                     <h2 className="mb-6 text-4xl font-bold text-black">
-                        Our Commitment
+                        Taahhüdümüz
                     </h2>
                     <p className="mb-8 text-lg leading-relaxed text-gray-700">
-                        At Mira Optik, we're not just selling glasses we're
-                        helping you see the world in a whole new way. Whether
-                        you need prescription eyeglasses for daily wear,
-                        protective blue light glasses for screen time, or
-                        stylish sunglasses for sunny days, we have you covered.
+                        Mira Optik olarak sadece gözlük satmıyoruz, dünyayı
+                        tamamen yeni bir şekilde görmenize yardımcı oluyoruz.
+                        Günlük kullanım için numaralı gözlük, ekran süresi için
+                        koruyucu mavi ışık gözlükleri veya güneşli günler için
+                        şık güneş gözlükleri arıyor olun, yanınızdayız.
                     </p>
                     <p className="text-lg leading-relaxed text-gray-700">
-                        Thank you for choosing Mira Optik. We look forward to
-                        being part of your vision journey.
+                        Mira Optik'i tercih ettiğiniz için teşekkür ederiz.
+                        Görüş yolculuğunuzun bir parçası olmayı dört gözle
+                        bekliyoruz.
                     </p>
                 </div>
             </section>

@@ -14,10 +14,10 @@ export default function Header() {
 
     const navigation = [
         { name: 'Ana Sayfa', href: '/' },
-        { name: 'Güneş Gözlüğü', href: '/catalog' },
-        { name: 'Optik Gözlük', href: '/catalog' },
-        { name: 'Lens Solüsyonu', href: '/about' },
-        { name: 'Hakkımızda', href: '/contact' },
+        { name: 'Güneş Gözlüğü', href: '/catalog?type=sunglasses' },
+        { name: 'Optik Gözlük', href: '/catalog?type=prescription' },
+        { name: 'Lens Solüsyonu', href: '/catalog?type=solution' },
+        { name: 'Hakkımızda', href: '/about' },
     ]
 
     return (

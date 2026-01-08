@@ -23,7 +23,7 @@ export default function Footer() {
                             {
                                 icon: Truck,
                                 text: 'Ücretsiz Kargo',
-                                sub: '500₺ üzeri siparişlerde',
+                                sub: '1000₺ üzeri siparişlerde',
                             },
                             {
                                 icon: Shield,
@@ -70,64 +70,51 @@ export default function Footer() {
                             </span>
                         </div>
                         <p className="mb-4 text-sm text-gray-400">
-                            Quality eyewear for every style and vision need.
-                            Your trusted partner in eye care.
+                            En kaliteli gözlükleri en uygun fiyatlarla sunan
+                            Mira Optik, stilinizi ve görüşünüzü
+                            mükemmelleştirir.
                         </p>
                         <div className="flex gap-3">
-                            <a
-                                href="#"
-                                className="rounded-full bg-gray-800 p-2 transition-colors hover:bg-emerald-500"
-                            >
-                                <Facebook className="h-5 w-5" />
-                            </a>
-                            <a
-                                href="#"
-                                className="rounded-full bg-gray-800 p-2 transition-colors hover:bg-emerald-500"
+                            <Link
+                                href="https://www.instagram.com/miraoptik/"
+                                className="hover:text-emerald-500"
                             >
                                 <Instagram className="h-5 w-5" />
-                            </a>
-                            <a
-                                href="#"
-                                className="rounded-full bg-gray-800 p-2 transition-colors hover:bg-emerald-500"
+                            </Link>
+                            <Link
+                                href="https://l.instagram.com/?u=http%3A%2F%2Fwa.me%2F905300641700&e=AT2D5rENJgm5Nzr8dT9d4f47yrgGON2VHSbP1WHavHYZgY6gPeP_DFnbCBP2KDWlJoa_CNFTLJambcWMXzNXPa_2jEs6Ij6JTY_dAMW1ILmSDnfK"
+                                className="hover:text-emerald-500"
                             >
-                                <Twitter className="h-5 w-5" />
-                            </a>
+                                <Phone className="h-5 w-5" />
+                            </Link>
                         </div>
                     </div>
 
                     <div>
-                        <h3 className="mb-4 text-lg font-bold">Quick Links</h3>
+                        <h3 className="mb-4 text-lg font-bold">Alışveriş</h3>
                         <ul className="space-y-2 text-sm text-gray-400">
                             <li>
                                 <Link
-                                    href="/sunglasses"
+                                    href="/catalog?type=sunglasses"
                                     className="transition-colors hover:text-emerald-500"
                                 >
-                                    Shop Sunglasses
+                                    Güneş Gözlükleri
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/eyeglasses"
+                                    href="/catalog?type=prescription"
                                     className="transition-colors hover:text-emerald-500"
                                 >
-                                    Shop Eyeglasses
+                                    Optik Gözlükler
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/about"
+                                    href="/catalog?type=solution"
                                     className="transition-colors hover:text-emerald-500"
                                 >
-                                    About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/contact"
-                                    className="transition-colors hover:text-emerald-500"
-                                >
-                                    Contact
+                                    Lens Solüsyonları
                                 </Link>
                             </li>
                         </ul>
@@ -135,61 +122,38 @@ export default function Footer() {
 
                     <div>
                         <h3 className="mb-4 text-lg font-bold">
-                            Customer Service
+                            Müşteri Hizmetleri
                         </h3>
                         <ul className="space-y-2 text-sm text-gray-400">
                             <li>
-                                <a
-                                    href="#"
-                                    className="transition-colors hover:text-emerald-500"
-                                >
-                                    FAQ
-                                </a>
+                                <Link href="/about">Hakkımızda</Link>
                             </li>
                             <li>
-                                <a
-                                    href="#"
-                                    className="transition-colors hover:text-emerald-500"
-                                >
-                                    Shipping & Returns
-                                </a>
+                                <Link href="/contact">İletişim</Link>
                             </li>
                             <li>
-                                <a
-                                    href="#"
-                                    className="transition-colors hover:text-emerald-500"
-                                >
-                                    Size Guide
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="#"
-                                    className="transition-colors hover:text-emerald-500"
-                                >
-                                    Privacy Policy
-                                </a>
+                                <Link href="/order/track">Sipariş Takibi</Link>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <h3 className="mb-4 text-lg font-bold">Contact Info</h3>
+                        <h3 className="mb-4 text-lg font-bold">İletişim</h3>
                         <ul className="space-y-3 text-sm text-gray-400">
                             <li className="flex items-center gap-2">
                                 <Mail className="h-4 w-4 text-emerald-500" />
-                                <span>info@miraoptik.com</span>
+                                <span>support@miraoptik.com</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Phone className="h-4 w-4 text-emerald-500" />
-                                <span>+1 (555) 123-4567</span>
+                                <span>0530 064 17 00</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <MapPin className="mt-1 h-4 w-4 text-emerald-500" />
                                 <span>
-                                    123 Vision Street
+                                    Kocatepe Cd. no:1/C, 34045
                                     <br />
-                                    New York, NY 10001
+                                    Bayrampaşa/İstanbul
                                 </span>
                             </li>
                         </ul>
@@ -198,13 +162,11 @@ export default function Footer() {
 
                 <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 md:flex-row">
                     <p className="text-sm text-gray-400">
-                        © 2025 Mira Optik. All rights reserved.
+                        © 2026 Mira Optik. All rights reserved.
                     </p>
                     <div className="flex gap-4 text-xs text-gray-500">
                         <span>Visa</span>
                         <span>Mastercard</span>
-                        <span>American Express</span>
-                        <span>PayPal</span>
                     </div>
                 </div>
             </div>
