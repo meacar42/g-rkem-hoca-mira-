@@ -1,7 +1,7 @@
 'use client'
 
 import { IProduct } from '@/types/IProduct'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import Link from 'next/link'
 import {
     ChevronLeft,
@@ -9,6 +9,7 @@ import {
     Shield,
     ShoppingCart,
     Star,
+    Send,
 } from 'lucide-react'
 import Button from '@/components/button'
 import { getProductDetailAPI } from '@/api/product/product.api'
@@ -25,22 +26,110 @@ import 'swiper/css/thumbs'
 import 'swiper/css/free-mode'
 import { useCart } from '@/contexts/cart-context'
 import { frameTypeLabels, genderLabels } from '@/types/IFrameTypeLabel'
+import { UserContext } from '@/contexts/user-context'
+import { IReview, ICanReviewResponse } from '@/types/IReview'
+import {
+    getProductReviewsAPI,
+    canReviewProductAPI,
+    createReviewAPI,
+} from '@/api/reviews/reviews.api'
 
 export default function ProductDetail({ id }: { id: number }) {
+    const userContext = useContext(UserContext)
     const [product, setProduct] = useState<IProduct | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null)
     const [quantity, setQuantity] = useState(1)
 
+    // Review states
+    const [reviews, setReviews] = useState<IReview[]>([])
+    const [averageRating, setAverageRating] = useState(0)
+    const [totalReviews, setTotalReviews] = useState(0)
+    const [canReviewInfo, setCanReviewInfo] = useState<ICanReviewResponse | null>(null)
+    const [reviewRating, setReviewRating] = useState(5)
+    const [reviewComment, setReviewComment] = useState('')
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+    const [reviewError, setReviewError] = useState<string | null>(null)
+    const [hoverRating, setHoverRating] = useState(0)
+
+    // Fetch product and reviews
     useEffect(() => {
         setIsLoading(true)
-        getProductDetailAPI(id).then((data) => {
-            if (data) {
-                setProduct(data)
-                setIsLoading(false)
+        Promise.all([
+            getProductDetailAPI(id),
+            getProductReviewsAPI(id),
+        ]).then(([productData, reviewsData]) => {
+            if (productData) {
+                setProduct(productData)
             }
+            setReviews(reviewsData.reviews)
+            setAverageRating(reviewsData.averageRating)
+            setTotalReviews(reviewsData.totalReviews)
+            setIsLoading(false)
+        }).catch(() => {
+            setIsLoading(false)
         })
     }, [id])
+
+    // Check if user can review (only when logged in)
+    useEffect(() => {
+        if (userContext?.currentUser) {
+            canReviewProductAPI(id)
+                .then((data) => setCanReviewInfo(data))
+                .catch(() => setCanReviewInfo(null))
+        } else {
+            setCanReviewInfo(null)
+        }
+    }, [id, userContext?.currentUser])
+
+    const handleSubmitReview = async () => {
+        if (!userContext?.currentUser) return
+
+        setIsSubmittingReview(true)
+        setReviewError(null)
+
+        try {
+            const newReview = await createReviewAPI({
+                productId: id,
+                rating: reviewRating,
+                comment: reviewComment || undefined,
+            })
+
+            // Add new review to list with user info
+            const reviewWithUser: IReview = {
+                ...newReview,
+                user: {
+                    id: userContext.currentUser.id,
+                    name: userContext.currentUser.name || '',
+                    surname: userContext.currentUser.surname || '',
+                },
+            }
+            setReviews((prev) => [reviewWithUser, ...prev])
+
+            // Update stats
+            const newTotal = totalReviews + 1
+            const newAverage = ((averageRating * totalReviews) + reviewRating) / newTotal
+            setTotalReviews(newTotal)
+            setAverageRating(newAverage)
+
+            // Reset form and update canReview
+            setReviewRating(5)
+            setReviewComment('')
+            setCanReviewInfo((prev) => prev ? { ...prev, canReview: false, hasReviewed: true } : null)
+        } catch (error) {
+            setReviewError(error instanceof Error ? error.message : 'Yorum gönderilirken bir hata oluştu')
+        } finally {
+            setIsSubmittingReview(false)
+        }
+    }
+
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('tr-TR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+    }
 
     if (isLoading || !product) {
         return (
@@ -144,12 +233,19 @@ export default function ProductDetail({ id }: { id: number }) {
                                         {[...Array(5)].map((_, i) => (
                                             <Star
                                                 key={i}
-                                                className="h-5 w-5 fill-emerald-500 text-emerald-500"
+                                                className={`h-5 w-5 ${
+                                                    i < Math.round(averageRating)
+                                                        ? 'fill-emerald-500 text-emerald-500'
+                                                        : 'text-gray-300'
+                                                }`}
                                             />
                                         ))}
                                     </div>
+                                    <span className="font-medium text-gray-700">
+                                        {averageRating.toFixed(1)}
+                                    </span>
                                     <span className="text-gray-600">
-                                        (127 reviews)
+                                        ({totalReviews} yorum)
                                     </span>
                                 </div>
                                 <p className="text-4xl font-bold text-emerald-500">
@@ -314,70 +410,137 @@ export default function ProductDetail({ id }: { id: number }) {
 
                 <div className="mt-8 rounded-lg bg-white p-8 shadow-lg">
                     <h2 className="mb-6 text-2xl font-bold">
-                        Customer Reviews
+                        Müşteri Yorumları
                     </h2>
+
+                    {/* Yorum Yazma Formu */}
+                    {userContext?.currentUser ? (
+                        canReviewInfo?.canReview ? (
+                            <div className="mb-8 rounded-lg border border-gray-200 p-6">
+                                <h3 className="mb-4 text-lg font-semibold">
+                                    Yorum Yazın
+                                </h3>
+                                <div className="mb-4">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                        Puanınız
+                                    </label>
+                                    <div className="flex gap-1">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <button
+                                                key={star}
+                                                type="button"
+                                                onClick={() => setReviewRating(star)}
+                                                onMouseEnter={() => setHoverRating(star)}
+                                                onMouseLeave={() => setHoverRating(0)}
+                                                className="transition-transform hover:scale-110"
+                                            >
+                                                <Star
+                                                    className={`h-8 w-8 ${
+                                                        star <= (hoverRating || reviewRating)
+                                                            ? 'fill-emerald-500 text-emerald-500'
+                                                            : 'text-gray-300'
+                                                    }`}
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">
+                                        Yorumunuz (isteğe bağlı)
+                                    </label>
+                                    <textarea
+                                        value={reviewComment}
+                                        onChange={(e) => setReviewComment(e.target.value)}
+                                        placeholder="Ürün hakkındaki düşüncelerinizi paylaşın..."
+                                        className="w-full rounded-lg border border-gray-300 p-3 text-gray-700 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                        rows={4}
+                                        maxLength={1000}
+                                    />
+                                    <p className="mt-1 text-sm text-gray-500">
+                                        {reviewComment.length}/1000 karakter
+                                    </p>
+                                </div>
+                                {reviewError && (
+                                    <p className="mb-4 text-sm text-red-600">
+                                        {reviewError}
+                                    </p>
+                                )}
+                                <Button
+                                    onClick={handleSubmitReview}
+                                    disabled={isSubmittingReview}
+                                >
+                                    <Send className="mr-2 h-4 w-4" />
+                                    {isSubmittingReview ? 'Gönderiliyor...' : 'Yorum Gönder'}
+                                </Button>
+                            </div>
+                        ) : canReviewInfo?.hasReviewed ? (
+                            <div className="mb-8 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+                                <p className="text-emerald-700">
+                                    Bu ürüne zaten yorum yapmışsınız.
+                                </p>
+                            </div>
+                        ) : canReviewInfo && !canReviewInfo.hasPurchased ? (
+                            <div className="mb-8 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                                <p className="text-yellow-700">
+                                    Yorum yapabilmek için bu ürünü satın almış ve teslim almış olmanız gerekmektedir.
+                                </p>
+                            </div>
+                        ) : null
+                    ) : (
+                        <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                            <p className="text-gray-700">
+                                Yorum yapabilmek için{' '}
+                                <Link href="/login" className="font-medium text-emerald-600 hover:text-emerald-700">
+                                    giriş yapın
+                                </Link>
+                                .
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Yorumlar Listesi */}
                     <div className="space-y-6">
-                        <div className="border-b border-gray-200 pb-6">
-                            <div className="mb-2 flex items-center gap-2">
-                                <div className="flex">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            className="h-4 w-4 fill-emerald-500 text-emerald-500"
-                                        />
-                                    ))}
-                                </div>
-                                <span className="font-medium">Sarah M.</span>
-                                <span className="text-sm text-gray-500">
-                                    Verified Purchase
-                                </span>
-                            </div>
-                            <p className="text-gray-700">
-                                Absolutely love these glasses! Perfect fit and
-                                great quality. The lenses are crystal clear.
+                        {reviews.length === 0 ? (
+                            <p className="text-center text-gray-500">
+                                Henüz yorum yapılmamış. İlk yorumu siz yapın!
                             </p>
-                        </div>
-                        <div className="border-b border-gray-200 pb-6">
-                            <div className="mb-2 flex items-center gap-2">
-                                <div className="flex">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            className="h-4 w-4 fill-emerald-500 text-emerald-500"
-                                        />
-                                    ))}
+                        ) : (
+                            reviews.map((review, index) => (
+                                <div
+                                    key={review.id}
+                                    className={`pb-6 ${
+                                        index < reviews.length - 1
+                                            ? 'border-b border-gray-200'
+                                            : ''
+                                    }`}
+                                >
+                                    <div className="mb-2 flex items-center gap-2">
+                                        <div className="flex">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star
+                                                    key={i}
+                                                    className={`h-4 w-4 ${
+                                                        i < review.rating
+                                                            ? 'fill-emerald-500 text-emerald-500'
+                                                            : 'text-gray-300'
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <span className="font-medium">
+                                            {review.user.name} {review.user.surname.charAt(0)}.
+                                        </span>
+                                        <span className="text-sm text-gray-500">
+                                            {formatDate(review.createdAt)}
+                                        </span>
+                                    </div>
+                                    {review.comment && (
+                                        <p className="text-gray-700">{review.comment}</p>
+                                    )}
                                 </div>
-                                <span className="font-medium">James T.</span>
-                                <span className="text-sm text-gray-500">
-                                    Verified Purchase
-                                </span>
-                            </div>
-                            <p className="text-gray-700">
-                                Great value for money. Comfortable to wear all
-                                day long.
-                            </p>
-                        </div>
-                        <div className="pb-6">
-                            <div className="mb-2 flex items-center gap-2">
-                                <div className="flex">
-                                    {[...Array(4)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            className="h-4 w-4 fill-emerald-500 text-emerald-500"
-                                        />
-                                    ))}
-                                    <Star className="h-4 w-4 text-gray-300" />
-                                </div>
-                                <span className="font-medium">Emily R.</span>
-                                <span className="text-sm text-gray-500">
-                                    Verified Purchase
-                                </span>
-                            </div>
-                            <p className="text-gray-700">
-                                Nice design and good quality. Took a few days to
-                                get used to the fit but overall very happy.
-                            </p>
-                        </div>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>
