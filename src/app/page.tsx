@@ -8,6 +8,8 @@ import { CustomerComments } from '@/components/customer-comments'
 import getSlidesAPI from '@/api/slide/get-slides.api'
 import BrandSlider from '@/components/brand-slider'
 
+export const dynamic = 'force-dynamic'
+
 async function Slides() {
     const slides = await getSlidesAPI()
 
