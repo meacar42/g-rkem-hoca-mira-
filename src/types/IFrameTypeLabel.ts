@@ -1,4 +1,4 @@
-import { FrameTypeLabel, Gender } from '@/types/IProduct'
+import { FrameTypeLabel, Gender, ProductType } from '@/types/IProduct'
 
 export const frameTypeLabels: Record<FrameTypeLabel, string> = {
     [FrameTypeLabel.FULL_RIM]: 'Tam Çerçeve',
@@ -17,4 +17,10 @@ export const genderLabels: Record<Gender, string> = {
     [Gender.MALE]: 'Erkek',
     [Gender.FEMALE]: 'Kadın',
     [Gender.UNISEX]: 'Unisex',
+}
+
+export const productTypeLabels: Record<ProductType, string> = {
+    [ProductType.SUNGLASS]: 'Güneş Gözlüğü',
+    [ProductType.PRESCRIPTION]: 'Numaralı Gözlük',
+    [ProductType.SOLUTION]: 'Lens Solüsyonu',
 }
